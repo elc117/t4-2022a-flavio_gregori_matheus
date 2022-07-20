@@ -8,7 +8,8 @@ public class DesktopLauncher {
 	public static void main (String[] arg) {
 		Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
 		config.setForegroundFPS(60);
-		config.setTitle("My GDX Game");
+		config.setTitle("Guillotine Clicker");
+		config.setResizable(false);
 		config.setWindowedMode(400, 400);
 		new Lwjgl3Application(new MyGdxGame(), config);
 	}

@@ -29,8 +29,10 @@ public class MyGdxGame extends ApplicationAdapter {
 		points = 0;
 		font = new BitmapFont();
 		font.setColor(Color.BLACK);
+
 		camera = new OrthographicCamera(400, 400);
 		camera.position.set(camera.viewportWidth / 2, camera.viewportHeight / 2, 0);
+
 		viewport = new FitViewport(camera.viewportWidth, camera.viewportHeight, camera);
 		camera.update();
 
@@ -65,7 +67,6 @@ public class MyGdxGame extends ApplicationAdapter {
 		viewport.update(width, height);
 	}
 
-
 	public void addPoints(){
 		points++;
 	}
@@ -73,4 +74,10 @@ public class MyGdxGame extends ApplicationAdapter {
 	public String getTextPoints(){
 		return "Cabeças: " + points;
 	}
+
+	public int XPointsPosition(){
+		return (int) camera.viewportWidth - (20);
+	}
+
+
 }

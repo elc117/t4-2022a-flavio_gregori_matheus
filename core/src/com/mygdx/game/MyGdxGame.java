@@ -10,11 +10,14 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.*;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.mygdx.game.input.InputHandler;
 import com.badlogic.gdx.Gdx;
 
 
 public class MyGdxGame extends ApplicationAdapter {
-	private int points;
+	private HeadStock stock;
+	private float timeSinceLastSecond = 0;
+
 	private BitmapFont font;
 
 	public Camera camera;
@@ -24,9 +27,10 @@ public class MyGdxGame extends ApplicationAdapter {
 
 	private Guillotine guillotine;
 
+	private InputHandler inputHandler;
+
 	@Override
 	public void create () {
-		points = 0;
 		font = new BitmapFont();
 		font.setColor(Color.BLACK);
 
@@ -38,14 +42,36 @@ public class MyGdxGame extends ApplicationAdapter {
 
 		batch = new SpriteBatch();
 
-		guillotine = new Guillotine();
+		stock = new HeadStock();
 
-		Gdx.input.setInputProcessor(new MyInputProcessor(guillotine, this));
+		guillotine = new Guillotine(stock);
+		stock.setClicable(guillotine);
+
+		HeadGenerator hunter = new HeadGenerator(5, 1, 2);
+		stock.getUnlockedGenerators().add(hunter);
+
+		inputHandler = new InputHandler(this);
+		inputHandler.addButton(guillotine);
+		inputHandler.keyActions.put('g', guillotine::boost);
+		inputHandler.keyActions.put('h', hunter::boost);
+		inputHandler.keyActions.put('H', hunter::buy);
+
+		Gdx.input.setInputProcessor(inputHandler);
+	}
+
+	private void gameIteration() {
+		timeSinceLastSecond += Gdx.graphics.getDeltaTime();
+		if (timeSinceLastSecond > 1) {
+			timeSinceLastSecond -= 1;
+			stock.passSecond();
+		}
 	}
 
 	
 	@Override
 	public void render () {
+		gameIteration();
+
 		ScreenUtils.clear(0.47f,0.59f,0.77f,1);
 
 		batch.setProjectionMatrix(camera.combined);
@@ -66,17 +92,17 @@ public class MyGdxGame extends ApplicationAdapter {
 	public void resize(int width, int height) {
 		viewport.update(width, height);
 	}
-
-	public void addPoints(){
-		points++;
-	}
 	
 	public String getTextPoints(){
-		return "Cabeças: " + points;
+		return "Cabeças: " + stock.getCurrencyInStock();
 	}
 
 	public int XPointsPosition(){
 		return (int) camera.viewportWidth - (20);
+	}
+
+	public HeadStock getStock() {
+		return stock;
 	}
 
 

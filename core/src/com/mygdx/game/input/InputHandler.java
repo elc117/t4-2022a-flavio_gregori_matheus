@@ -1,17 +1,21 @@
-package com.mygdx.game;
+package com.mygdx.game.input;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.math.Vector3;
+import com.mygdx.game.MyGdxGame;
 
-public class MyInputProcessor implements InputProcessor{
-
-    private Guillotine guillotine;
+public class InputHandler implements InputProcessor {
     private MyGdxGame game;
 
-    public MyInputProcessor(Guillotine gui, MyGdxGame gam){
+    private final ArrayList<Button> buttons = new ArrayList<>();
+    public final HashMap<Character, Action> keyActions = new HashMap<>();
+
+    public InputHandler(MyGdxGame gam){
         game = gam;
-        guillotine = gui;
     }
 
     @Override
@@ -28,19 +32,22 @@ public class MyInputProcessor implements InputProcessor{
 
     @Override
     public boolean keyTyped(char character) {
-        // TODO Auto-generated method stub
+        Action action = keyActions.get(character);
+        if (action != null) {
+            action.act();
+        }
         return false;
+    }
+
+    public void addButton(Button button) {
+        buttons.add(button);
     }
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         if(button == Buttons.LEFT){
-            Vector3 gamePosition = game.camera.unproject(new Vector3(screenX, screenY, 0));
-            if(guillotine.mouseClick((int)gamePosition.x, (int) gamePosition.y)){
-
-                game.addPoints();
-
-            }
+            Vector3 gamePosition3D = game.camera.unproject(new Vector3(screenX, screenY, 0));
+            buttons.stream().filter(b -> b.getRectangle().contains(gamePosition3D.x, gamePosition3D.y)).forEach(Button::onClick);
         }
         return false;
     }

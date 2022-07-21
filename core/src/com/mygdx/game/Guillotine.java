@@ -3,13 +3,20 @@ package com.mygdx.game;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Rectangle;
+import com.mygdx.game.base.Clicable;
+import com.mygdx.game.input.Button;
 import com.badlogic.gdx.Gdx;
 
-public class Guillotine {
+public class Guillotine extends Clicable implements Button {
     private Sprite guillotineSprite;
     private Texture guillotineTexture;
+    private HeadStock stock;
 
-    public Guillotine(){
+    public Guillotine(HeadStock headStock){
+        super(1);
+
+        stock = headStock;
 
 		guillotineTexture = new Texture("crop/01.png");
 
@@ -24,11 +31,17 @@ public class Guillotine {
         guillotineSprite.draw(batch);
     }
 
-    public boolean mouseClick(int x, int y){
-        
-        if(guillotineSprite.getBoundingRectangle().contains(x,y)){
-            return true;
-        }
-        return false;
+    public Sprite getSprite() {
+        return guillotineSprite;
+    }
+
+    @Override
+    public void onClick() {
+        stock.click();
+    }
+
+    @Override
+    public Rectangle getRectangle() {
+        return guillotineSprite.getBoundingRectangle();
     }
 }

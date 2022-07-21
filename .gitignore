@@ -14,3 +14,8 @@ gradle-app.setting
 /desktop/build/
 /html/build/
 /ios/build/
+/android/bin/
+/core/bin/
+/desktop/bin/
+/html/bin/
+/ios/bin/

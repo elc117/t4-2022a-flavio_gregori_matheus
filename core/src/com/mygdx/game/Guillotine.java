@@ -1,47 +1,72 @@
 package com.mygdx.game;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.mygdx.game.base.Clicable;
 import com.mygdx.game.input.Button;
 import com.badlogic.gdx.Gdx;
 
 public class Guillotine extends Clicable implements Button {
-    private Sprite guillotineSprite;
-    private Texture guillotineTexture;
+    private Sprite sprite;
     private HeadStock stock;
+    private TextureRegion[] frames;
+    private float time;
+    private Animation<TextureRegion> animation;
+    private boolean animationState;
 
     public Guillotine(HeadStock headStock){
         super(1);
 
         stock = headStock;
+        time = 0;
+        animationState = false;
 
-		guillotineTexture = new Texture("crop/01.png");
+        frames = new TextureRegion[12];
+        for(int i = 0; i < 12; i++){
+            frames[i] = new TextureRegion( new Texture("guillotine/" + String.format("%02d", i+1) + ".png") );
+        }
 
-		guillotineSprite = new Sprite(guillotineTexture);
+        animation = new Animation<TextureRegion>(0.07f, frames);
 
-        int bottomMargin = (int) (Gdx.graphics.getHeight() - guillotineTexture.getHeight()) / 2;
-        guillotineSprite.setPosition(50, bottomMargin);
-        guillotineSprite.setOrigin(50, bottomMargin);
+		sprite = new Sprite(frames[0]);
+
+        int bottomMargin = (int) (Gdx.graphics.getHeight() - frames[0].getRegionHeight()) / 2;
+        sprite.setPosition(50, bottomMargin);
+        sprite.setOrigin(50, bottomMargin);
     }
 
     public void draw(SpriteBatch batch){
-        guillotineSprite.draw(batch);
+        if(animationState == true){
+            time += Gdx.graphics.getDeltaTime();
+            sprite.setRegion(animation.getKeyFrame(time, false));
+
+            if(time >= animation.getAnimationDuration()){
+                animationState = false;
+            }
+
+        }else{
+            time = 0f;
+        }
+
+        sprite.draw(batch);
     }
 
     public Sprite getSprite() {
-        return guillotineSprite;
+        return sprite;
     }
 
     @Override
     public void onClick() {
+        animationState = true;
         stock.click();
     }
 
     @Override
     public Rectangle getRectangle() {
-        return guillotineSprite.getBoundingRectangle();
+        return sprite.getBoundingRectangle();
     }
 }

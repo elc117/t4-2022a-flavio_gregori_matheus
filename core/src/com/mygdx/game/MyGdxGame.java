@@ -47,7 +47,7 @@ public class MyGdxGame extends ApplicationAdapter {
 		guillotine = new Guillotine(stock);
 		stock.setClicable(guillotine);
 
-		HeadGenerator hunter = new HeadGenerator(5, 1, 2);
+		HeadGenerator hunter = new HeadGenerator(1, 0, 2);
 		stock.getUnlockedGenerators().add(hunter);
 
 		inputHandler = new InputHandler(this);

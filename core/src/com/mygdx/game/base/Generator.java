@@ -3,12 +3,12 @@ package com.mygdx.game.base;
 public abstract class Generator {
     protected long currencyPerSecond;
     protected int amount;
-    protected long price;
+    protected long buyPrice;
 
     public Generator(long currencyPerSecond, int amount, long price) {
         this.currencyPerSecond = currencyPerSecond;
         this.amount = amount;
-        this.price = price;
+        this.buyPrice = price;
     }
 
     public long generate(Stock stock) {
@@ -21,5 +21,10 @@ public abstract class Generator {
 
     public void buy() {
         amount++;
+        buyPrice++;
+    }
+
+    public long getBuyPrice(){
+        return buyPrice;
     }
 }

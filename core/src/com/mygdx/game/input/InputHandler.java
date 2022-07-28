@@ -14,6 +14,8 @@ public class InputHandler implements InputProcessor {
     private final ArrayList<Button> buttons = new ArrayList<>();
     public final HashMap<Character, Action> keyActions = new HashMap<>();
 
+    private final ArrayList<BuyButton> buyButtons = new ArrayList<>();
+
     public InputHandler(MyGdxGame gam){
         game = gam;
     }
@@ -43,11 +45,31 @@ public class InputHandler implements InputProcessor {
         buttons.add(button);
     }
 
+    private void addBuyButtons(ArrayList<BuyButton> buts){
+        for(BuyButton b : buts){
+            buyButtons.add(b);
+        }
+    }
+
+    public void attBuyButtons(ArrayList<BuyButton> unlockedButtons){
+        ArrayList<BuyButton> aux = new ArrayList<>(unlockedButtons);
+        aux.removeAll(buyButtons);
+        addBuyButtons(aux);
+    }
+
+
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         if(button == Buttons.LEFT){
             Vector3 gamePosition3D = game.camera.unproject(new Vector3(screenX, screenY, 0));
             buttons.stream().filter(b -> b.getRectangle().contains(gamePosition3D.x, gamePosition3D.y)).forEach(Button::onClick);
+
+            for(BuyButton b : buyButtons){
+                if(b.getRectangle().contains(gamePosition3D.x, gamePosition3D.y)){
+                    b.onClick();
+                    game.getStock().chargeHeads(b.getHeadGenerator().getBuyPrice());
+                }
+            }
         }
         return false;
     }
@@ -75,5 +97,4 @@ public class InputHandler implements InputProcessor {
         // TODO Auto-generated method stub
         return false;
     }
-    
 }

@@ -39,6 +39,7 @@ public class Guillotine extends Clicable implements Button {
         sprite.setOrigin(50, bottomMargin);
     }
 
+
     public void draw(SpriteBatch batch){
         if(animationState == true){
             time += Gdx.graphics.getDeltaTime();

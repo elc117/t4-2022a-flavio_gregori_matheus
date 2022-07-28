@@ -47,14 +47,10 @@ public class MyGdxGame extends ApplicationAdapter {
 		guillotine = new Guillotine(stock);
 		stock.setClicable(guillotine);
 
-		HeadGenerator hunter = new HeadGenerator(1, 0, 2);
-		stock.getUnlockedGenerators().add(hunter);
 
 		inputHandler = new InputHandler(this);
 		inputHandler.addButton(guillotine);
 		inputHandler.keyActions.put('g', guillotine::boost);
-		inputHandler.keyActions.put('h', hunter::boost);
-		inputHandler.keyActions.put('H', hunter::buy);
 
 		Gdx.input.setInputProcessor(inputHandler);
 	}
@@ -64,6 +60,7 @@ public class MyGdxGame extends ApplicationAdapter {
 		if (timeSinceLastSecond > 1) {
 			timeSinceLastSecond -= 1;
 			stock.passSecond();
+			inputHandler.attBuyButtons(stock.getHeadGenerators().getButtons());
 		}
 	}
 
@@ -79,6 +76,7 @@ public class MyGdxGame extends ApplicationAdapter {
 		batch.begin();
 		guillotine.draw(batch);
 		font.draw(batch, getTextPoints(), camera.viewportWidth-100, camera.viewportHeight-10);
+		stock.getHeadGenerators().drawButtons(batch);
 		batch.end();
 	}
 	

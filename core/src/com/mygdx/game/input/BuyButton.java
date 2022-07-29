@@ -11,20 +11,26 @@ public class BuyButton implements Button{
     private HeadGenerator generator;
     private Texture texture;
     private Sprite sprite;
+    private String text;
 
     public BuyButton(HeadGenerator gen, String path){
         generator = gen;
-
+        text = generator.getName();
         texture = new Texture(path);
         sprite = new Sprite(texture);
-
-        int bottomMargin = (int) (Gdx.graphics.getHeight() - texture.getHeight()) / 2;
-
-        sprite.setPosition(0, bottomMargin);
-        sprite.setOrigin(0, bottomMargin);
+    }
+    
+    public void adujustButton(int x, int y){
+        sprite.setPosition(x, y);
+        sprite.setOrigin(x, y);
+    }
+    
+    public Texture getTexture(){
+        return texture;
     }
 
     public void draw(SpriteBatch batch){
+        
         sprite.draw(batch);
     }
 

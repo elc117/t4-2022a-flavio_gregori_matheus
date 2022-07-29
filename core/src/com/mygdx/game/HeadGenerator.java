@@ -9,13 +9,12 @@ public class HeadGenerator extends Generator {
     private BuyButton buyButton;
     private long amountToUnlock;
 
-    public HeadGenerator(long headsPerSecond, int amount, long price, String genName, long amountUnlock) {
+    public HeadGenerator(long headsPerSecond, int amount, long price, String genName, long amountUnlock, String texturePath) {
         super(headsPerSecond, amount, price);
         name = genName;
-        buyButton = new BuyButton(this, "basket_separate.png");
+        buyButton = new BuyButton(this, texturePath);
         amountToUnlock = amountUnlock;
     }
-
     
     public BuyButton getButton(){
         return buyButton;

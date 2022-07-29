@@ -66,8 +66,10 @@ public class InputHandler implements InputProcessor {
 
             for(BuyButton b : buyButtons){
                 if(b.getRectangle().contains(gamePosition3D.x, gamePosition3D.y)){
-                    b.onClick();
-                    game.getStock().chargeHeads(b.getHeadGenerator().getBuyPrice());
+                    if(game.getStock().getCurrencyInStock() >= b.getHeadGenerator().getBuyPrice()){
+                        game.getStock().chargeHeads(b.getHeadGenerator().getBuyPrice());
+                        b.onClick();
+                    }
                 }
             }
         }

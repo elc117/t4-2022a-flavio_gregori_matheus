@@ -2,6 +2,8 @@ package com.mygdx.game;
 
 import java.util.ArrayList;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mygdx.game.input.BuyButton;
@@ -15,12 +17,13 @@ public class HeadGenerators {
         unlockedHeadGenerators = new ArrayList<>();
         lockedHeadGenerators = new ArrayList<>();
 
-        hunter = new HeadGenerator(1, 0, 10, "Caçador", 10);
-        goblin = new HeadGenerator(2, 0, 50, "Goblin", 100);
+        hunter = new HeadGenerator(1, 0, 10, "Caçador", 10, "buttons/hunterButton.png");
+        goblin = new HeadGenerator(200, 0, 50, "Goblin", 100, "head.png");
         lockedHeadGenerators.add(hunter);
         lockedHeadGenerators.add(goblin);
 
         attGenerators(0);
+        disposeButtons();
     }
 
     public ArrayList<BuyButton> getButtons(){
@@ -33,6 +36,32 @@ public class HeadGenerators {
         return buttons;
     }
 
+    private ArrayList<BuyButton> getAllButtons(){
+        ArrayList<BuyButton> buttons = new ArrayList<>();
+
+        for(HeadGenerator gen : unlockedHeadGenerators){
+            buttons.add(gen.getButton());
+        }
+
+        for(HeadGenerator gen : lockedHeadGenerators){
+            buttons.add(gen.getButton());
+        }
+
+        return buttons;
+    }
+
+    public void disposeButtons(){
+        Texture t;
+        int x;
+        int y = Gdx.graphics.getHeight() - 50;
+        for(BuyButton b : getAllButtons()){
+            t = b.getTexture();
+            x = Gdx.graphics.getWidth() - t.getWidth();
+            y -= t.getHeight();
+            b.adujustButton(x, y);
+        }
+    }
+
     public ArrayList<HeadGenerator> getUnlockedGenerators(){
         return unlockedHeadGenerators;
     }
@@ -43,12 +72,8 @@ public class HeadGenerators {
 
     public void attGenerators(long headAmount){
         ArrayList<HeadGenerator> iterator = new ArrayList<>(lockedHeadGenerators);
-        System.out.println("att");
-        System.out.println("total: " + headAmount);
         for(HeadGenerator gen : iterator){
             if(gen.getAmountToUnlock() <= headAmount){
-                System.out.println("desbloqueado" + gen.getName());
-                System.out.println("amount: " + gen.getAmountToUnlock());
                 lockedHeadGenerators.remove(gen);
                 unlockedHeadGenerators.add(gen);
             }

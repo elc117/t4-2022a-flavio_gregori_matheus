@@ -2,6 +2,8 @@ package com.mygdx.game.input;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
@@ -29,8 +31,29 @@ public class BuyButton implements Button{
         return texture;
     }
 
-    public void draw(SpriteBatch batch){
+    private void drawTextName(SpriteBatch batch, BitmapFont font){
+        GlyphLayout aux = new GlyphLayout();
+        aux.setText(font, text);
         
+        font.draw(batch, aux, sprite.getOriginX() - aux.width, sprite.getOriginY() + texture.getHeight() - aux.height/2 );
+    }
+
+    private void drawPrice(SpriteBatch batch, BitmapFont font){
+        GlyphLayout aux = new GlyphLayout();
+
+        font.getData().setScale(0.5f, 0.5f);
+
+        aux.setText(font, String.valueOf(generator.getBuyPrice()));
+        font.draw(batch, aux, sprite.getOriginX() - aux.width, sprite.getOriginY() + aux.height );
+
+        font.getData().setScale(1, 1);
+    }
+
+    public void draw(SpriteBatch batch, BitmapFont font){
+        drawTextName(batch, font);
+        drawPrice(batch, font);
+       
+
         sprite.draw(batch);
     }
 

@@ -76,7 +76,7 @@ public class MyGdxGame extends ApplicationAdapter {
 		batch.begin();
 		guillotine.draw(batch);
 		font.draw(batch, getTextPoints(), camera.viewportWidth-100, camera.viewportHeight-10);
-		stock.getHeadGenerators().drawButtons(batch);
+		stock.getHeadGenerators().drawButtons(batch, font);
 		batch.end();
 	}
 	

@@ -24,23 +24,16 @@ public abstract class Stock {
     }
 
     public void passSecond() {
-        long generatedThisSecond = generators.getUnlockedGenerators().stream().mapToLong(g -> g.generate(this)).sum();
+        long generatedThisSecond = generators.getGenerators().stream().mapToLong(g -> g.generate(this)).sum();
         currencyInStock += generatedThisSecond;
         totalCurrencyGenerated += generatedThisSecond;
-        generators.attGenerators(totalCurrencyGenerated);
+        generators.attButtons(totalCurrencyGenerated);
     }
 
     public void setClicable(Clicable clicable) {
         this.clicable = clicable;
     }
     
-    public ArrayList<HeadGenerator> getUnlockedGenerators() {
-        return generators.getUnlockedGenerators();
-    }
-
-    public ArrayList<HeadGenerator> getLockedGenerators() {
-        return generators.getLockeHeadGenerators();
-    }
 
     public long getCurrencyInStock() {
         return currencyInStock;

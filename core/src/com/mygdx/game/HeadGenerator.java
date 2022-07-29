@@ -6,20 +6,14 @@ import com.mygdx.game.input.BuyButton;
 
 public class HeadGenerator extends Generator {
     private String name;
-    private BuyButton buyButton;
     private long amountToUnlock;
 
-    public HeadGenerator(long headsPerSecond, int amount, long price, String genName, long amountUnlock, String texturePath) {
+    public HeadGenerator(long headsPerSecond, int amount, long price, String genName, long amountUnlock) {
         super(headsPerSecond, amount, price);
         name = genName;
-        buyButton = new BuyButton(this, texturePath);
         amountToUnlock = amountUnlock;
     }
     
-    public BuyButton getButton(){
-        return buyButton;
-    }
-
     public long getAmountToUnlock(){
         return amountToUnlock;
     }

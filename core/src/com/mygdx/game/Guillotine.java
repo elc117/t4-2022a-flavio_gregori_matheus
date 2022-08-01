@@ -18,7 +18,7 @@ public class Guillotine extends Clicable implements Button {
     private Animation<TextureRegion> animation;
     private boolean animationState;
 
-    public Guillotine(HeadStock headStock){
+    public Guillotine(HeadStock headStock) {
         super(1);
 
         stock = headStock;
@@ -26,30 +26,29 @@ public class Guillotine extends Clicable implements Button {
         animationState = false;
 
         frames = new TextureRegion[12];
-        for(int i = 0; i < 12; i++){
-            frames[i] = new TextureRegion( new Texture("guillotine/" + String.format("%02d", i+1) + ".png") );
+        for (int i = 0; i < 12; i++) {
+            frames[i] = new TextureRegion(new Texture("guillotine/" + String.format("%02d", i + 1) + ".png"));
         }
 
         animation = new Animation<TextureRegion>(0.07f, frames);
 
-		sprite = new Sprite(frames[0]);
+        sprite = new Sprite(frames[0]);
 
         int bottomMargin = (int) (Gdx.graphics.getHeight() - frames[0].getRegionHeight()) / 2;
         sprite.setPosition(50, bottomMargin);
         sprite.setOrigin(50, bottomMargin);
     }
 
-
-    public void draw(SpriteBatch batch){
-        if(animationState == true){
+    public void draw(SpriteBatch batch) {
+        if (animationState == true) {
             time += Gdx.graphics.getDeltaTime();
             sprite.setRegion(animation.getKeyFrame(time, false));
 
-            if(time >= animation.getAnimationDuration()){
+            if (time >= animation.getAnimationDuration()) {
                 animationState = false;
             }
 
-        }else{
+        } else {
             time = 0f;
         }
 

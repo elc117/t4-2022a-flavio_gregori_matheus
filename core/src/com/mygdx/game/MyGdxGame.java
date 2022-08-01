@@ -1,6 +1,5 @@
 package com.mygdx.game;
 
-
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -12,7 +11,6 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.game.input.InputHandler;
 import com.badlogic.gdx.Gdx;
-
 
 public class MyGdxGame extends ApplicationAdapter {
 	private HeadStock stock;
@@ -29,8 +27,10 @@ public class MyGdxGame extends ApplicationAdapter {
 
 	private InputHandler inputHandler;
 
+	private Dragon dragon;
+
 	@Override
-	public void create () {
+	public void create() {
 		font = new BitmapFont();
 		font.setColor(Color.BLACK);
 
@@ -47,6 +47,7 @@ public class MyGdxGame extends ApplicationAdapter {
 		guillotine = new Guillotine(stock);
 		stock.setClicable(guillotine);
 
+		dragon = new Dragon();
 
 		inputHandler = new InputHandler(this);
 		inputHandler.addButton(guillotine);
@@ -64,24 +65,24 @@ public class MyGdxGame extends ApplicationAdapter {
 		}
 	}
 
-	
 	@Override
-	public void render () {
+	public void render() {
 		gameIteration();
 
-		ScreenUtils.clear(0.47f,0.59f,0.77f,1);
+		ScreenUtils.clear(0.47f, 0.59f, 0.77f, 1);
 
 		batch.setProjectionMatrix(camera.combined);
-		
+
 		batch.begin();
 		guillotine.draw(batch);
-		font.draw(batch, getTextPoints(), camera.viewportWidth-100, camera.viewportHeight-10);
+		dragon.draw(batch);
+		font.draw(batch, getTextPoints(), camera.viewportWidth - 100, camera.viewportHeight - 10);
 		stock.getHeadGenerators().drawButtons(batch, font);
 		batch.end();
 	}
-	
+
 	@Override
-	public void dispose () {
+	public void dispose() {
 		batch.dispose();
 		font.dispose();
 	}
@@ -90,18 +91,17 @@ public class MyGdxGame extends ApplicationAdapter {
 	public void resize(int width, int height) {
 		viewport.update(width, height);
 	}
-	
-	public String getTextPoints(){
+
+	public String getTextPoints() {
 		return "Cabeças: " + stock.getCurrencyInStock();
 	}
 
-	public int XPointsPosition(){
+	public int XPointsPosition() {
 		return (int) camera.viewportWidth - (20);
 	}
 
 	public HeadStock getStock() {
 		return stock;
 	}
-
 
 }

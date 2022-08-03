@@ -26,8 +26,8 @@ public class Guillotine extends Clicable implements Button {
         animationState = false;
 
         frames = new TextureRegion[12];
-        for (int i = 0; i < 12; i++) {
-            frames[i] = new TextureRegion(new Texture("guillotine/" + String.format("%02d", i + 1) + ".png"));
+        for (int i = 1; i <= 12; i++) {
+            frames[i - 1] = new TextureRegion(new Texture(("guillotine/" + i + ".png")));
         }
 
         animation = new Animation<TextureRegion>(0.07f, frames);

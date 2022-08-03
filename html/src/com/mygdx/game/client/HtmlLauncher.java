@@ -8,15 +8,15 @@ import com.mygdx.game.MyGdxGame;
 public class HtmlLauncher extends GwtApplication {
 
         @Override
-        public GwtApplicationConfiguration getConfig () {
+        public GwtApplicationConfiguration getConfig() {
                 // Resizable application, uses available space in browser
-                return new GwtApplicationConfiguration(true);
+                // return new GwtApplicationConfiguration(true);
                 // Fixed size application:
-                //return new GwtApplicationConfiguration(480, 320);
+                return new GwtApplicationConfiguration(400, 400);
         }
 
         @Override
-        public ApplicationListener createApplicationListener () {
+        public ApplicationListener createApplicationListener() {
                 return new MyGdxGame();
         }
 }

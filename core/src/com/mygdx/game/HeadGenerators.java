@@ -11,28 +11,31 @@ import com.badlogic.gdx.utils.Array;
 import com.mygdx.game.input.BuyButton;
 
 public class HeadGenerators {
-    private static HeadGenerator hunter, goblin, jonas;
-    private static BuyButton goblinButton, hunterButton, jonasButton;
     private static ArrayList<BuyButton> unlockedButtons = new ArrayList<>();
     private static ArrayList<BuyButton> lockedButtons = new ArrayList<>();
     private static ArrayList<HeadGenerator> headGenerators = new ArrayList<>();
-
+    
     public void init(){
-        hunter = new HeadGenerator(1, 0, 10, "Caçador", 0);
-        jonas = new HeadGenerator(200, 0, 50, "Jonas", 100);
-        goblin = new HeadGenerator(200, 0, 50, "Goblin", 100);
-        
-        hunterButton = new BuyButton(hunter, "buttons/hunterButton.png");
-        goblinButton = new BuyButton(goblin, "buttons/hunterButton.png");
-        jonasButton = new BuyButton(jonas, "buttons/hunterButton.png");
+        HeadGenerator hunter = new HeadGenerator(1, 0, 15, "Caçador", 0);
+        HeadGenerator goblin = new HeadGenerator(3, 0, 100, "Goblin", 200);
+        HeadGenerator orc = new HeadGenerator(9, 0, 1100, "Orc", 1500);
+        HeadGenerator sacrifice = new HeadGenerator(25, 0, (long) 12E+3, "Sacrifícios",(long) 15E+3);
+        HeadGenerator feudalAttack = new HeadGenerator(100, 0, (long) 130E+3, "Ataque ao feudo", (long) 150E+3);
+        HeadGenerator hydra = new HeadGenerator(250, 0, (long) 14E+6, "Caça às hidras", (long) 16E+6);
 
-        lockedButtons.add(hunterButton);
-        lockedButtons.add(goblinButton);
-        lockedButtons.add(jonasButton);
+        lockedButtons.add(new BuyButton(hunter, "buttons/hunterButton.png"));
+        lockedButtons.add(new BuyButton(goblin, "buttons/hunterButton.png"));
+        lockedButtons.add(new BuyButton(orc, "buttons/hunterButton.png"));
+        lockedButtons.add(new BuyButton(sacrifice, "buttons/hunterButton.png"));
+        lockedButtons.add(new BuyButton(feudalAttack, "buttons/hunterButton.png"));
+        lockedButtons.add(new BuyButton(hydra, "buttons/hunterButton.png"));
 
         headGenerators.add(hunter);
         headGenerators.add(goblin);
-        headGenerators.add(jonas);
+        headGenerators.add(orc);
+        headGenerators.add(sacrifice);
+        headGenerators.add(feudalAttack);
+        headGenerators.add(hydra);
 
         attButtons(0);
         disposeButtons();

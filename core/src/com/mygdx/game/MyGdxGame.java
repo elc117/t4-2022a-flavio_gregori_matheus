@@ -42,7 +42,9 @@ public class MyGdxGame extends ApplicationAdapter {
 
 		batch = new SpriteBatch();
 
+
 		stock = new HeadStock();
+		stock.setHeadGeneratorManager(new HeadGeneratorManager(stock));
 
 		guillotine = new Guillotine(stock);
 		stock.setClicable(guillotine);
@@ -61,7 +63,7 @@ public class MyGdxGame extends ApplicationAdapter {
 		if (timeSinceLastSecond > 1) {
 			timeSinceLastSecond -= 1;
 			stock.passSecond();
-			inputHandler.attBuyButtons(stock.getHeadGenerators().getButtons());
+			inputHandler.addAllButtons(stock.getHeadGeneratorManager().getUnlockedButtons());
 		}
 	}
 
@@ -78,7 +80,7 @@ public class MyGdxGame extends ApplicationAdapter {
 
 		// dragon.draw(batch);
 		font.draw(batch, getTextPoints(), camera.viewportWidth - 100, camera.viewportHeight - 10);
-		stock.getHeadGenerators().drawButtons(batch, font);
+		stock.getHeadGeneratorManager().drawButtons(batch, font);
 		batch.end();
 	}
 

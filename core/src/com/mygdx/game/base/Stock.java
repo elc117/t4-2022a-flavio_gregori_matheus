@@ -1,21 +1,14 @@
 package com.mygdx.game.base;
 
-import java.util.ArrayList;
-
-import com.mygdx.game.HeadGenerator;
-import com.mygdx.game.HeadGenerators;
-
 public abstract class Stock {
     protected long currencyInStock;
     protected long totalCurrencyGenerated;
     protected Clicable clicable;
-    protected HeadGenerators generators;
+    protected GeneratorManager<?> generatorManager;
 
     public Stock(){
         currencyInStock = 0;
         totalCurrencyGenerated = 0;
-        generators = new HeadGenerators();
-        generators.init();
     }
 
     public void click() {
@@ -24,26 +17,25 @@ public abstract class Stock {
     }
 
     public void passSecond() {
-        long generatedThisSecond = generators.getGenerators().stream().mapToLong(g -> g.generate(this)).sum();
+        long generatedThisSecond = generatorManager.generate(this);
         currencyInStock += generatedThisSecond;
         totalCurrencyGenerated += generatedThisSecond;
-        generators.attButtons(totalCurrencyGenerated);
+        generatorManager.updateUnlockedGenerators(totalCurrencyGenerated);
     }
 
     public void setClicable(Clicable clicable) {
         this.clicable = clicable;
     }
-    
+
+    public void setGeneratorManager(GeneratorManager<?> generatorManager) {
+        this.generatorManager = generatorManager;
+    }
 
     public long getCurrencyInStock() {
         return currencyInStock;
     }
 
-    public HeadGenerators getHeadGenerators(){
-        return generators;
-    }
-
-    public void chargeHeads(long amount){
+    public void charge(long amount){
         currencyInStock -= amount;
     }
 }

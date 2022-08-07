@@ -1,20 +1,18 @@
 package com.mygdx.game.input;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Input.Buttons;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.math.Vector3;
 import com.mygdx.game.MyGdxGame;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedHashSet;
+
 public class InputHandler implements InputProcessor {
     private MyGdxGame game;
-
-    private final ArrayList<Button> buttons = new ArrayList<>();
+    private final LinkedHashSet<Button> buttons = new LinkedHashSet<>();
     public final HashMap<Character, Action> keyActions = new HashMap<>();
-
-    private final ArrayList<BuyButton> buyButtons = new ArrayList<>();
 
     public InputHandler(MyGdxGame gam){
         game = gam;
@@ -41,37 +39,19 @@ public class InputHandler implements InputProcessor {
         return false;
     }
 
-    public void addButton(Button button) {
+    public <T extends Button> void addButton(T button) {
         buttons.add(button);
     }
 
-    private void addBuyButtons(ArrayList<BuyButton> buts){
-        for(BuyButton b : buts){
-            buyButtons.add(b);
-        }
+    public <T extends Button> void addAllButtons(Collection<T> buttons) {
+        this.buttons.addAll(buttons);
     }
-
-    public void attBuyButtons(ArrayList<BuyButton> unlockedButtons){
-        ArrayList<BuyButton> aux = new ArrayList<>(unlockedButtons);
-        aux.removeAll(buyButtons);
-        addBuyButtons(aux);
-    }
-
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         if(button == Buttons.LEFT){
             Vector3 gamePosition3D = game.camera.unproject(new Vector3(screenX, screenY, 0));
             buttons.stream().filter(b -> b.getRectangle().contains(gamePosition3D.x, gamePosition3D.y)).forEach(Button::onClick);
-
-            for(BuyButton b : buyButtons){
-                if(b.getRectangle().contains(gamePosition3D.x, gamePosition3D.y)){
-                    if(game.getStock().getCurrencyInStock() >= b.getHeadGenerator().getBuyPrice()){
-                        game.getStock().chargeHeads(b.getHeadGenerator().getBuyPrice());
-                        b.onClick();
-                    }
-                }
-            }
         }
         return false;
     }

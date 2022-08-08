@@ -1,74 +1,67 @@
 package com.mygdx.game;
 
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.utils.Align;
 import com.mygdx.game.base.Generator;
-import com.mygdx.game.input.Button;
 
-public class HeadGenerator extends Generator implements Button {
+public class HeadGenerator extends Generator {
     private String name;
-    private Texture texture;
-    private Sprite sprite;
+    public Sprite sprite;
     private HeadStock headStock;
+    private Label priceLabel;
+    private Label amountLabel;
 
     public HeadGenerator(long headsPerSecond, int amount, long price, long amountToUnlock, HeadStock headStock, String name, String iconPath) {
         super(headsPerSecond, amount, price, amountToUnlock);
         this.name = name;
-        texture = new Texture(iconPath);
+        Texture texture = new Texture(iconPath);
         sprite = new Sprite(texture);
         this.headStock = headStock;
     }
 
-    public String getName(){
-        return name;
+    public Button generateButton(Skin skin) {
+        VerticalGroup verticalGroup = new VerticalGroup();
+
+        amountLabel = new Label(amountText(), skin);
+
+        Label nameLabel = new Label(name, skin);
+        nameLabel.setAlignment(Align.right);
+        verticalGroup.addActor(nameLabel);
+
+        priceLabel = new Label(String.valueOf(buyPrice), skin);
+        priceLabel.setAlignment(Align.right);
+        verticalGroup.addActor(priceLabel);
+
+        verticalGroup.fill();
+
+        Button button = new Button(skin);
+        button.add(amountLabel).spaceRight(5);
+        button.add(verticalGroup);
+        button.add(new Image(sprite));
+        button.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                onClick();
+            }
+        });
+        return button;
     }
 
-    public void adujustButton(int x, int y){
-        sprite.setPosition(x, y);
-        sprite.setOrigin(x, y);
-    }
-
-    public Texture getTexture(){
-        return texture;
-    }
-
-    private void drawTextName(SpriteBatch batch, BitmapFont font){
-        GlyphLayout aux = new GlyphLayout();
-        aux.setText(font, name);
-
-        font.draw(batch, aux, sprite.getOriginX() - aux.width, sprite.getOriginY() + texture.getHeight() - aux.height/2 );
-    }
-
-    private void drawPrice(SpriteBatch batch, BitmapFont font){
-        GlyphLayout aux = new GlyphLayout();
-
-        font.getData().setScale(0.5f, 0.5f);
-
-        aux.setText(font, String.valueOf(getBuyPrice()));
-        font.draw(batch, aux, sprite.getOriginX() - aux.width, sprite.getOriginY() + aux.height );
-
-        font.getData().setScale(1, 1);
-    }
-
-    public void draw(SpriteBatch batch, BitmapFont font){
-        drawTextName(batch, font);
-        drawPrice(batch, font);
-
-
-        sprite.draw(batch);
-    }
-
-    @Override
-    public Rectangle getRectangle() {
-        return sprite.getBoundingRectangle();
-    }
-
-    @Override
     public void onClick() {
         buy(headStock);
+        priceLabel.setText(buyPriceText());
+        amountLabel.setText(amountText());
+    }
+
+    private String buyPriceText() {
+        return String.valueOf(buyPrice);
+    }
+
+    private String amountText() {
+        return "x" + amount;
     }
 }

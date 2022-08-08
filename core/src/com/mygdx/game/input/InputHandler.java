@@ -1,33 +1,29 @@
 package com.mygdx.game.input;
 
-import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.math.Vector3;
-import com.mygdx.game.MyGdxGame;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.mygdx.game.GuillotineClicker;
 
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.LinkedHashSet;
 
 public class InputHandler implements InputProcessor {
-    private MyGdxGame game;
-    private final LinkedHashSet<Button> buttons = new LinkedHashSet<>();
+    private GuillotineClicker game;
+    private Stage stage;
     public final HashMap<Character, Action> keyActions = new HashMap<>();
 
-    public InputHandler(MyGdxGame gam){
-        game = gam;
+    public InputHandler(GuillotineClicker game, Stage stage){
+        this.game = game;
+        this.stage = stage;
     }
 
     @Override
     public boolean keyDown(int keycode) {
-        
-        return false;
+        return stage.keyDown(keycode);
     }
 
     @Override
     public boolean keyUp(int keycode) {
-        // TODO Auto-generated method stub
-        return false;
+        return stage.keyUp(keycode);
     }
 
     @Override
@@ -36,47 +32,32 @@ public class InputHandler implements InputProcessor {
         if (action != null) {
             action.act();
         }
-        return false;
+        return stage.keyTyped(character);
     }
 
-    public <T extends Button> void addButton(T button) {
-        buttons.add(button);
-    }
-
-    public <T extends Button> void addAllButtons(Collection<T> buttons) {
-        this.buttons.addAll(buttons);
-    }
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        if(button == Buttons.LEFT){
-            Vector3 gamePosition3D = game.camera.unproject(new Vector3(screenX, screenY, 0));
-            buttons.stream().filter(b -> b.getRectangle().contains(gamePosition3D.x, gamePosition3D.y)).forEach(Button::onClick);
-        }
-        return false;
+        return stage.touchDown(screenX, screenY, pointer, button);
     }
 
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-        
-        return false;
+        return stage.touchUp(screenX, screenY, pointer, button);
     }
 
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {
-        // TODO Auto-generated method stub
-        return false;
+        return stage.touchDragged(screenX, screenY, pointer);
     }
 
     @Override
     public boolean mouseMoved(int screenX, int screenY) {
-        // TODO Auto-generated method stub
-        return false;
+        return stage.mouseMoved(screenX, screenY);
     }
 
     @Override
     public boolean scrolled(float amountX, float amountY) {
-        // TODO Auto-generated method stub
-        return false;
+        return stage.scrolled(amountX, amountY);
     }
 }

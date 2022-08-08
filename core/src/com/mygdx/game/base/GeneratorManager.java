@@ -8,12 +8,13 @@ public abstract class GeneratorManager<T extends Generator> {
     protected ArrayList<T> unlockedGenerators = new ArrayList<>();
     protected ArrayList<T> lockedGenerators = new ArrayList<>();
 
-    public void updateUnlockedGenerators(long totalCurrencyGenerated) {
+    public List<T> updateUnlockedGenerators(long totalCurrencyGenerated) {
         List<T> newlyUnlocked = lockedGenerators.stream()
                 .filter(generator -> generator.getAmountToUnlock() <= totalCurrencyGenerated)
                 .collect(Collectors.toList());
         unlockedGenerators.addAll(newlyUnlocked);
         lockedGenerators.removeAll(newlyUnlocked);
+        return newlyUnlocked;
     }
 
     public long generate(Stock stock) {

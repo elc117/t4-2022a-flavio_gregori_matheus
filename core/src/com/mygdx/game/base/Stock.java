@@ -6,7 +6,7 @@ public abstract class Stock {
     protected Clickable clickable;
     protected GeneratorManager<?> generatorManager;
 
-    public Stock(){
+    public Stock() {
         currencyInStock = 0;
         totalCurrencyGenerated = 0;
     }
@@ -27,6 +27,10 @@ public abstract class Stock {
         this.clickable = clickable;
     }
 
+    public Clickable getClickable() {
+        return clickable;
+    }
+
     public void setGeneratorManager(GeneratorManager<?> generatorManager) {
         this.generatorManager = generatorManager;
     }
@@ -35,11 +39,15 @@ public abstract class Stock {
         return currencyInStock;
     }
 
+    public void setCurrencyInStock(long currencyInStock) {
+        this.currencyInStock = currencyInStock;
+    }
+
     public long getTotalCurrencyGenerated() {
         return totalCurrencyGenerated;
     }
 
-    public void charge(long amount){
+    public void charge(long amount) {
         currencyInStock -= amount;
     }
 }

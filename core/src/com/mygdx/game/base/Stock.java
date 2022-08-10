@@ -20,7 +20,7 @@ public abstract class Stock {
         long generatedThisSecond = generatorManager.generate(this);
         currencyInStock += generatedThisSecond;
         totalCurrencyGenerated += generatedThisSecond;
-        generatorManager.updateUnlockedGenerators(totalCurrencyGenerated);
+        generatorManager.updateUnlockedGenerators(totalCurrencyGenerated, currencyInStock);
     }
 
     public void setClicable(Clicable clicable) {
@@ -33,6 +33,10 @@ public abstract class Stock {
 
     public long getCurrencyInStock() {
         return currencyInStock;
+    }
+
+    public long getTotalCurrencyGenerated() {
+        return totalCurrencyGenerated;
     }
 
     public void charge(long amount){

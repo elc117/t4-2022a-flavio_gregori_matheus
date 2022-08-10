@@ -2,16 +2,17 @@ package com.mygdx.game;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.Button.ButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
@@ -29,17 +30,43 @@ public class GuillotineClicker extends ApplicationAdapter {
 	private Dragon dragon;
 	private Stage stage;
 
+	private Texture createTexture(int width, int height, Color color) {
+		Pixmap pixmap = new Pixmap(width, height, Pixmap.Format.RGBA8888);
+		pixmap.setColor(color);
+		pixmap.fillRectangle(0, 0, width, height);
+		Texture texture = new Texture(pixmap);
+		pixmap.dispose();
+		return texture;
+	}
+
 	private Skin createSkin() {
 		Skin skin = new Skin();
+		skin.add("red", createTexture(1, 1, new Color(0.827f, 0.137f, 0.047f, 1)));
+		skin.add("darkred", createTexture(1, 1, new Color(0.678f, 0.247f, 0.149f, 1)));
+		skin.add("gray", createTexture(1, 1, new Color(0.345f, 0.4f, 0.443f, 1)));
+		skin.add("darkgray", createTexture(1, 1, new Color(0.157f, 0.192f, 0.227f, 1)));
 
-		Label.LabelStyle labelStyle = new Label.LabelStyle();
-		labelStyle.font = font;
-		labelStyle.fontColor = Color.BLACK;
+		Label.LabelStyle defaultLabelStyle = new Label.LabelStyle();
+		defaultLabelStyle.font = font;
+		defaultLabelStyle.fontColor = Color.BLACK;
 
-		Button.ButtonStyle buttonStyle = new Button.ButtonStyle();
+		ButtonStyle defaultButtonStyle = new ButtonStyle();
 
-		skin.add("default", labelStyle);
-		skin.add("default", buttonStyle);
+		skin.add("default", defaultLabelStyle);
+		skin.add("default", defaultButtonStyle);
+
+		skin.add("amount", defaultLabelStyle);
+		skin.add("price", defaultLabelStyle);
+		skin.add("name", defaultLabelStyle);
+
+		ButtonStyle generatorButton = new ButtonStyle(defaultButtonStyle);
+		generatorButton.up = skin.getDrawable("red");
+		generatorButton.down = skin.getDrawable("darkred");
+		generatorButton.disabled = skin.getDrawable("gray");
+		generatorButton.pressedOffsetY = -1;
+
+		skin.add("generator", generatorButton);
+
 		return skin;
 	}
 
@@ -117,6 +144,7 @@ public class GuillotineClicker extends ApplicationAdapter {
 
 	@Override
 	public void render() {
+//		stage.getRoot().debugAll();
 		gameIteration();
 
 		ScreenUtils.clear(0.47f, 0.59f, 0.77f, 1);

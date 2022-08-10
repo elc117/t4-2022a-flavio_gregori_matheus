@@ -1,13 +1,10 @@
 package com.mygdx.game;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 import com.mygdx.game.base.GeneratorManager;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class HeadGeneratorManager extends GeneratorManager<HeadGenerator> {
@@ -32,18 +29,23 @@ public class HeadGeneratorManager extends GeneratorManager<HeadGenerator> {
         this.buttonSkin = skin;
         buttonGroup = new VerticalGroup().fill();
 
-        updateUnlockedGenerators(0);
+        updateUnlockedGenerators(0, 0);
     }
 
     @Override
-    public List<HeadGenerator> updateUnlockedGenerators(long totalCurrencyGenerated) {
-        List<HeadGenerator> newlyAdded = super.updateUnlockedGenerators(totalCurrencyGenerated);
+    public List<HeadGenerator> updateUnlockedGenerators(long totalCurrencyGenerated, long currencyInStock) {
+        List<HeadGenerator> newlyAdded = super.updateUnlockedGenerators(totalCurrencyGenerated, currencyInStock);
         for (HeadGenerator headGenerator : newlyAdded) {
             Button button = headGenerator.generateButton(buttonSkin);
             button.right();
+            headGenerator.setButton(button);
             buttonGroup.addActor(button);
         }
+        for (HeadGenerator headGenerator : unlockedGenerators) {
+            headGenerator.getButton().setDisabled(headGenerator.getBuyPrice() > currencyInStock);
+        }
         return newlyAdded;
+
     }
 
     public VerticalGroup getButtonGroup() {

@@ -1,14 +1,14 @@
 package com.mygdx.game.base;
 
 public abstract class Generator {
-    protected long currencyPerSecond;
+    protected long initialCurrencyPerSecond;
     protected int amount;
     protected long basePrice;
     protected long buyPrice;
     protected long amountToUnlock;
 
     public Generator(long currencyPerSecond, int amount, long price, long amountToUnlock) {
-        this.currencyPerSecond = currencyPerSecond;
+        this.initialCurrencyPerSecond = currencyPerSecond;
         this.amount = amount;
         this.buyPrice = price;
         this.basePrice = price;
@@ -16,11 +16,15 @@ public abstract class Generator {
     }
 
     public long generate(Stock stock) {
-        return currencyPerSecond * amount;
+        return getCurrencyPerSecond();
+    }
+
+    public long getCurrencyPerSecond() {
+        return initialCurrencyPerSecond * amount;
     }
 
     public void boost() {
-        currencyPerSecond *= 2;
+        initialCurrencyPerSecond *= 2;
     }
 
     public void buy(Stock stock) {

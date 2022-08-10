@@ -32,6 +32,7 @@ public class HeadStock extends Stock {
     public void click() {
         super.click();
         currentHeadsInStock.setText(getHeadsLabelText());
+        headGeneratorManager.updateUnlockedGenerators(totalCurrencyGenerated, currencyInStock);
     }
 
     @Override

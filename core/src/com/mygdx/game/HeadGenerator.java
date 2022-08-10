@@ -10,10 +10,11 @@ import com.mygdx.game.base.Generator;
 
 public class HeadGenerator extends Generator {
     private String name;
-    public Sprite sprite;
+    private Sprite sprite;
     private HeadStock headStock;
     private Label priceLabel;
     private Label amountLabel;
+    private Button button;
 
     public HeadGenerator(long headsPerSecond, int amount, long price, long amountToUnlock, HeadStock headStock, String name, String iconPath) {
         super(headsPerSecond, amount, price, amountToUnlock);
@@ -26,20 +27,22 @@ public class HeadGenerator extends Generator {
     public Button generateButton(Skin skin) {
         VerticalGroup verticalGroup = new VerticalGroup();
 
-        amountLabel = new Label(amountText(), skin);
+        amountLabel = new Label(amountText(), skin, "amount");
+        amountLabel.setAlignment(Align.left);
 
-        Label nameLabel = new Label(name, skin);
+        Label nameLabel = new Label(name, skin, "name");
         nameLabel.setAlignment(Align.right);
         verticalGroup.addActor(nameLabel);
 
-        priceLabel = new Label(String.valueOf(buyPrice), skin);
+        priceLabel = new Label(String.valueOf(buyPrice), skin, "price");
         priceLabel.setAlignment(Align.right);
         verticalGroup.addActor(priceLabel);
 
         verticalGroup.fill();
 
-        Button button = new Button(skin);
-        button.add(amountLabel).spaceRight(5);
+        Button button = new Button(skin, "generator");
+        button.padLeft(5).padRight(5).padTop(2).padBottom(2);
+        button.add(amountLabel).left().expand();
         button.add(verticalGroup);
         button.add(new Image(sprite));
         button.addListener(new ChangeListener() {
@@ -55,6 +58,7 @@ public class HeadGenerator extends Generator {
         buy(headStock);
         priceLabel.setText(buyPriceText());
         amountLabel.setText(amountText());
+        headStock.getHeadGeneratorManager().updateUnlockedGenerators(headStock.getTotalCurrencyGenerated(), headStock.getCurrencyInStock());
     }
 
     private String buyPriceText() {
@@ -62,6 +66,14 @@ public class HeadGenerator extends Generator {
     }
 
     private String amountText() {
-        return "x" + amount;
+        return amount == 0 ? "" : String.valueOf(amount);
+    }
+
+    public Button getButton() {
+        return button;
+    }
+
+    public void setButton(Button button) {
+        this.button = button;
     }
 }

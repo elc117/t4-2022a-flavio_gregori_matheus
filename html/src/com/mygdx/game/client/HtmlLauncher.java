@@ -12,7 +12,7 @@ public class HtmlLauncher extends GwtApplication {
                 // Resizable application, uses available space in browser
                 // return new GwtApplicationConfiguration(true);
                 // Fixed size application:
-                return new GwtApplicationConfiguration(400, 400);
+                return new GwtApplicationConfiguration(800, 800, true);
         }
 
         @Override

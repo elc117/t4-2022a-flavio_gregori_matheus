@@ -59,6 +59,10 @@ public class GuillotineClicker extends ApplicationAdapter {
 		skin.add("brownRectangle", coloredSprite(rectangle, skin.getColor("brown")));
 		skin.add("darkBrownRectangle", coloredSprite(rectangle, skin.getColor("darkBrown")));
 		skin.add("grayRectangle", coloredSprite(rectangle, skin.getColor("gray")));
+		skin.add("woodenBackground", new Texture("wooden_plank.png"));
+		skin.add("darkWoodenBackground", new Texture("dark_wooden_plank.png"));
+		skin.add("disabledWoodenBackground", new Texture("disabled_wooden_plank.png"));
+		skin.add("background", new Texture("background.png"));
 
 		Label.LabelStyle defaultLabelStyle = new Label.LabelStyle();
 		defaultLabelStyle.font = font;
@@ -74,9 +78,9 @@ public class GuillotineClicker extends ApplicationAdapter {
 		skin.add("name", defaultLabelStyle);
 
 		ButtonStyle generatorButton = new ButtonStyle(defaultButtonStyle);
-		generatorButton.up = skin.getDrawable("brownRectangle");
-		generatorButton.down = skin.getDrawable("darkBrownRectangle");
-		generatorButton.disabled = skin.getDrawable("grayRectangle");
+		generatorButton.up = skin.getDrawable("woodenBackground");
+		generatorButton.down = skin.getDrawable("darkWoodenBackground");
+		generatorButton.disabled = skin.getDrawable("disabledWoodenBackground");
 		generatorButton.pressedOffsetY = -1;
 
 		skin.add("generator", generatorButton);
@@ -101,6 +105,7 @@ public class GuillotineClicker extends ApplicationAdapter {
 		stage.setViewport(viewport);
 
 		Table rootTable = new Table();
+		rootTable.background(skin.getDrawable("background"));
 		rootTable.setFillParent(true);
 		stage.addActor(rootTable);
 

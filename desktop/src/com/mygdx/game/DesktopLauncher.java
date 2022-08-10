@@ -10,7 +10,7 @@ public class DesktopLauncher {
 		config.setForegroundFPS(60);
 		config.setTitle("Guillotine Clicker");
 //		config.setResizable(false);
-		config.setWindowedMode(400, 400);
+		config.setWindowedMode(800, 800);
 		new Lwjgl3Application(new GuillotineClicker(), config);
 	}
 }

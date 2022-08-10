@@ -28,6 +28,7 @@ public class HeadGeneratorManager extends GeneratorManager<HeadGenerator> {
         lockedGenerators.add(hydra);
         this.buttonSkin = skin;
         buttonGroup = new VerticalGroup().fill();
+        buttonGroup.space(5);
 
         updateUnlockedGenerators(0, 0);
     }

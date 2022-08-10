@@ -8,9 +8,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.mygdx.game.base.Clicable;
+import com.mygdx.game.base.Clickable;
 
-public class Guillotine extends Clicable {
+public class Guillotine extends Clickable {
     private HeadStock stock;
     private AnimatedBackground animatedBackground;
 

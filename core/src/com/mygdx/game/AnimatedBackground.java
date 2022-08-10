@@ -11,6 +11,7 @@ public class AnimatedBackground extends BaseDrawable {
     private final Animation<TextureRegion> animation;
     private float stateTime = 0;
     private boolean animating = false;
+    private boolean loop = false;
 
     public AnimatedBackground(Animation<TextureRegion> animation) {
 
@@ -28,7 +29,7 @@ public class AnimatedBackground extends BaseDrawable {
 
     @Override
     public void draw(Batch batch, float x, float y, float width, float height) {
-        if (animation.isAnimationFinished(stateTime)) {
+        if (!loop && animation.isAnimationFinished(stateTime)) {
             animating = false;
             stateTime = 0;
         } else if (animating) {
@@ -42,5 +43,9 @@ public class AnimatedBackground extends BaseDrawable {
 
     public void startAnimation() {
         animating = true;
+    }
+
+    public void loop() {
+        loop = true;
     }
 }

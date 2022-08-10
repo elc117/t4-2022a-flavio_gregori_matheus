@@ -1,15 +1,22 @@
 package com.mygdx.game.input;
 
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.utils.Pools;
 import com.mygdx.game.GuillotineClicker;
 
 import java.util.HashMap;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 public class InputHandler implements InputProcessor {
     private GuillotineClicker game;
     private Stage stage;
     public final HashMap<Character, Action> keyActions = new HashMap<>();
+    private final Set<Button> buttons = new LinkedHashSet<>();
 
     public InputHandler(GuillotineClicker game, Stage stage){
         this.game = game;
@@ -35,6 +42,9 @@ public class InputHandler implements InputProcessor {
         return stage.keyTyped(character);
     }
 
+    public <T extends Button> void addButton(T button) {
+        stage.getRoot().addActor(button);
+    }
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {

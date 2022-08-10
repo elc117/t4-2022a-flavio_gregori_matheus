@@ -3,7 +3,7 @@ package com.mygdx.game.base;
 public abstract class Stock {
     protected long currencyInStock;
     protected long totalCurrencyGenerated;
-    protected Clicable clicable;
+    protected Clickable clickable;
     protected GeneratorManager<?> generatorManager;
 
     public Stock(){
@@ -12,8 +12,8 @@ public abstract class Stock {
     }
 
     public void click() {
-        currencyInStock += clicable.generate(this);
-        totalCurrencyGenerated += clicable.generate(this);
+        currencyInStock += clickable.generate(this);
+        totalCurrencyGenerated += clickable.generate(this);
     }
 
     public void passSecond() {
@@ -23,8 +23,8 @@ public abstract class Stock {
         generatorManager.updateUnlockedGenerators(totalCurrencyGenerated, currencyInStock);
     }
 
-    public void setClicable(Clicable clicable) {
-        this.clicable = clicable;
+    public void setClicable(Clickable clickable) {
+        this.clickable = clickable;
     }
 
     public void setGeneratorManager(GeneratorManager<?> generatorManager) {

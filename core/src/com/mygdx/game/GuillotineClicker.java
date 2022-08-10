@@ -39,12 +39,26 @@ public class GuillotineClicker extends ApplicationAdapter {
 		return texture;
 	}
 
+	private Sprite coloredSprite(Texture texture, Color color) {
+		Sprite coloredSprite = new Sprite(texture);
+		coloredSprite.setColor(color);
+		return coloredSprite;
+	}
+
 	private Skin createSkin() {
 		Skin skin = new Skin();
-		skin.add("red", createTexture(1, 1, new Color(0.827f, 0.137f, 0.047f, 1)));
-		skin.add("darkred", createTexture(1, 1, new Color(0.678f, 0.247f, 0.149f, 1)));
-		skin.add("gray", createTexture(1, 1, new Color(0.345f, 0.4f, 0.443f, 1)));
-		skin.add("darkgray", createTexture(1, 1, new Color(0.157f, 0.192f, 0.227f, 1)));
+		Texture circle = new Texture("circle.png");
+		Texture rectangle = new Texture("rectangle.png");
+		skin.add("whiteCircle", circle);
+		skin.add("whiteRectangle", rectangle);
+		skin.add("red", new Color(0.827f, 0.137f, 0.047f, 1));
+		skin.add("brown", new Color(0.396f, 0.239f, 0.149f, 1));
+		skin.add("darkBrown", new Color(0.349f, 0.184f, 0.133f, 1));
+		skin.add("gray", new Color(0.49f, 0.471f, 0.384f, 1));
+		skin.add("redRectangle", coloredSprite(rectangle, skin.getColor("red")));
+		skin.add("brownRectangle", coloredSprite(rectangle, skin.getColor("brown")));
+		skin.add("darkBrownRectangle", coloredSprite(rectangle, skin.getColor("darkBrown")));
+		skin.add("grayRectangle", coloredSprite(rectangle, skin.getColor("gray")));
 
 		Label.LabelStyle defaultLabelStyle = new Label.LabelStyle();
 		defaultLabelStyle.font = font;
@@ -60,9 +74,9 @@ public class GuillotineClicker extends ApplicationAdapter {
 		skin.add("name", defaultLabelStyle);
 
 		ButtonStyle generatorButton = new ButtonStyle(defaultButtonStyle);
-		generatorButton.up = skin.getDrawable("red");
-		generatorButton.down = skin.getDrawable("darkred");
-		generatorButton.disabled = skin.getDrawable("gray");
+		generatorButton.up = skin.getDrawable("brownRectangle");
+		generatorButton.down = skin.getDrawable("darkBrownRectangle");
+		generatorButton.disabled = skin.getDrawable("grayRectangle");
 		generatorButton.pressedOffsetY = -1;
 
 		skin.add("generator", generatorButton);

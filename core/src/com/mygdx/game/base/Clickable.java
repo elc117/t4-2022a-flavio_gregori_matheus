@@ -1,9 +1,9 @@
 package com.mygdx.game.base;
 
-public abstract class Clicable {
+public abstract class Clickable {
     protected long currencyPerClick;
 
-    public Clicable(long currencyPerClick) {
+    public Clickable(long currencyPerClick) {
         this.currencyPerClick = currencyPerClick;
     }
 

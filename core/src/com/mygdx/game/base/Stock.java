@@ -7,6 +7,7 @@ public abstract class Stock {
     protected float actualCurrencyGenerated;
     protected Clickable clickable;
     protected GeneratorManager<?> generatorManager;
+    protected boolean isBoosted = false;
 
     public Stock() {
         actualCurrencyInStock = 0;
@@ -21,6 +22,9 @@ public abstract class Stock {
 
     public void click() {
         long generated = clickable.generate(this);
+        if (isBoosted) {
+            generated *= 2;
+        }
         actualCurrencyInStock += generated;
         actualCurrencyGenerated += generated;
         updateCurrency();
@@ -29,6 +33,9 @@ public abstract class Stock {
     public void passTime(float deltaTime) {
         long generatedInASecond = generatorManager.generate(this);
         float generated = (generatedInASecond * deltaTime);
+        if (isBoosted) {
+            generated *= 2;
+        }
         actualCurrencyGenerated += generated;
         actualCurrencyInStock += generated;
         updateCurrency();
@@ -58,5 +65,9 @@ public abstract class Stock {
     public void charge(long amount) {
         actualCurrencyInStock -= amount;
         updateCurrency();
+    }
+
+    public void setBoosted(boolean boosted) {
+        isBoosted = boosted;
     }
 }

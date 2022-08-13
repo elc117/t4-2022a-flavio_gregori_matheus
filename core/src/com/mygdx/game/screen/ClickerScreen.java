@@ -4,8 +4,11 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.actions.DelayAction;
+import com.badlogic.gdx.scenes.scene2d.actions.RepeatAction;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
@@ -19,7 +22,7 @@ import com.mygdx.game.util.Util;
 public class ClickerScreen extends ScreenAdapter {
     private HeadStock stock;
     private BitmapFont font;
-    public Camera camera;
+    private Camera camera;
     private Viewport viewport;
     private Guillotine guillotine;
     private Dragon dragon;
@@ -40,7 +43,7 @@ public class ClickerScreen extends ScreenAdapter {
         stock.setHeadGeneratorManager(new HeadGeneratorManager(stock, skin));
         guillotine = new Guillotine(stock);
         stock.setClicable(guillotine);
-        dragon = new Dragon();
+        dragon = new Dragon(stock, skin);
 
         leaderBoardNamePopup = new Window("", skin);
         TextField textField = new TextField("", skin);
@@ -79,8 +82,23 @@ public class ClickerScreen extends ScreenAdapter {
 
         stage = createStage(skin);
 
+        RepeatAction repeat = new RepeatAction();
+        repeat.setCount(RepeatAction.FOREVER);
+        DelayAction delayAction = new DelayAction(5);
+        delayAction.setAction(new Action() {
+            @Override
+            public boolean act(float delta) {
+                dragon.addToStage(stage);
+                return true;
+            }
+        });
+        repeat.setAction(delayAction);
+        stage.addAction(repeat);
+
+
+
         inputHandler = new InputHandler(stage);
-        inputHandler.keyActions.put('g', guillotine::boost); /*For testing purposes*/
+        inputHandler.keyActions.put('g', guillotine::permanentBoost); /*For testing purposes*/
     }
 
     private Stage createStage(Skin skin) {

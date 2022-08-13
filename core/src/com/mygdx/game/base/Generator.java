@@ -23,7 +23,7 @@ public abstract class Generator {
         return initialCurrencyPerSecond * amount;
     }
 
-    public void boost() {
+    public void permanentBoost() {
         initialCurrencyPerSecond *= 2;
     }
 

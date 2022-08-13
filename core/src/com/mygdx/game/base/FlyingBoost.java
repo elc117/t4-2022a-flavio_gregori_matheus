@@ -1,11 +1,11 @@
 package com.mygdx.game.base;
 
 public abstract class FlyingBoost {
-    void applyBoost(Stock stock) {
-        stock.getClickable().setBoosted(true);
+    protected void applyBoost(Stock stock) {
+        stock.setBoosted(true);
     }
 
-    void removeBoost(Stock stock) {
-        stock.getClickable().setBoosted(false);
+    protected void removeBoost(Stock stock) {
+        stock.setBoosted(false);
     }
 }

@@ -1,41 +1,49 @@
 package com.mygdx.game;
 
-import com.badlogic.gdx.ApplicationAdapter;
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.mygdx.game.screen.ClickerScreen;
+import com.mygdx.game.screen.LeaderBoardScreen;
 
-public class GuillotineClicker extends ApplicationAdapter {
+import java.util.HashMap;
+
+public class GuillotineClicker extends Game {
 	private ClickerScreen clickerScreen;
-	private Screen currentScreen;
+	private LeaderBoardScreen leaderBoardScreen;
+	private final HashMap<Screen, Float> inactiveScreens = new HashMap<>();
 	@Override
 	public void create() {
-		clickerScreen = new ClickerScreen();
-		currentScreen = clickerScreen;
+		clickerScreen = new ClickerScreen(this);
+		leaderBoardScreen = new LeaderBoardScreen("testGame", clickerScreen, this);
+		clickerScreen.setLeaderBoardScreen(leaderBoardScreen);
+		setScreen(clickerScreen);
 	}
 
 	@Override
-	public void resize(int width, int height) {
-		currentScreen.resize(width, height);
+	public void setScreen(Screen screen) {
+		inactiveScreens.put(this.screen, 0f);
+		super.setScreen(screen);
 	}
 
 	@Override
 	public void render() {
-		currentScreen.render(Gdx.graphics.getDeltaTime());
-	}
-
-	@Override
-	public void pause() {
-		currentScreen.pause();
-	}
-
-	@Override
-	public void resume() {
-		currentScreen.resume();
+		float deltaTime = Gdx.graphics.getDeltaTime();
+		inactiveScreens.replaceAll((s, time) -> time + deltaTime);
+		if (screen != null) {
+			Float inactiveTime = inactiveScreens.get(screen);
+			if (inactiveTime == null) {
+				screen.render(deltaTime);
+			} else {
+				screen.render(inactiveTime);
+				inactiveScreens.remove(screen);
+			}
+		}
 	}
 
 	@Override
 	public void dispose() {
 		clickerScreen.dispose();
+		leaderBoardScreen.dispose();
 	}
 }

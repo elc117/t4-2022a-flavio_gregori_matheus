@@ -3,45 +3,38 @@ package com.mygdx.game.screen;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Button;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
-import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.mygdx.game.Dragon;
-import com.mygdx.game.Guillotine;
-import com.mygdx.game.HeadGeneratorManager;
-import com.mygdx.game.HeadStock;
+import com.mygdx.game.*;
 import com.mygdx.game.input.InputHandler;
+import com.mygdx.game.leaderboard.PostScoreResponseListener;
 import com.mygdx.game.util.Util;
 
 public class ClickerScreen extends ScreenAdapter {
-    private boolean active = false;
     private HeadStock stock;
-    private float timeSinceLastSecond = 0;
     private BitmapFont font;
     public Camera camera;
     private Viewport viewport;
-    private SpriteBatch batch;
     private Guillotine guillotine;
     private Dragon dragon;
     private Stage stage;
+    private InputHandler inputHandler;
+    private LeaderBoardScreen leaderBoardScreen;
+    private Window leaderBoardNamePopup;
+    GuillotineClicker guillotineClicker;
 
-    public ClickerScreen() {
-        batch = new SpriteBatch();
-        font = createFont();
-        Skin skin = createSkin();
-        camera = createCamera();
-        viewport = createViewport(camera);
+    public ClickerScreen(GuillotineClicker guillotineClicker) {
+        this.guillotineClicker = guillotineClicker;
+        font = Util.createFont();
+        Skin skin = Util.createSkin();
+        camera = Util.createCamera();
+        viewport = Util.createViewport(camera);
 
         stock = new HeadStock();
         stock.setHeadGeneratorManager(new HeadGeneratorManager(stock, skin));
@@ -49,66 +42,45 @@ public class ClickerScreen extends ScreenAdapter {
         stock.setClicable(guillotine);
         dragon = new Dragon();
 
+        leaderBoardNamePopup = new Window("", skin);
+        TextField textField = new TextField("", skin);
+        textField.setMessageText("What's your name?");
+        leaderBoardNamePopup.setFillParent(true);
+        leaderBoardNamePopup.add(textField);
+
+        Button submitButton = new Button(skin);
+        submitButton.add("Submit");
+        submitButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                leaderBoardScreen.getLeaderBoard().postScore(textField.getText(), String.valueOf(stock.getTotalCurrencyGenerated()), new PostScoreResponseListener() {
+                    @Override
+                    public void handleHttpResponse(boolean success, String message) {
+                        if (success) {
+                            System.out.println(message);
+                            leaderBoardNamePopup.remove();
+                        }
+                    }
+
+                    @Override
+                    public void failed(Throwable t) {
+                        t.printStackTrace();
+                    }
+
+                    @Override
+                    public void cancelled() {
+
+                    }
+                });
+            }
+        });
+        leaderBoardNamePopup.row();
+        leaderBoardNamePopup.add(submitButton);
+
         stage = createStage(skin);
 
-        InputHandler inputHandler = new InputHandler(stage);
+        inputHandler = new InputHandler(stage);
         inputHandler.keyActions.put('g', guillotine::boost); /*For testing purposes*/
-        Gdx.input.setInputProcessor(inputHandler);
-    }
-
-    private Skin createSkin() {
-        Skin skin = new Skin();
-        Texture circle = new Texture("circle.png");
-        Texture rectangle = new Texture("rectangle.png");
-        skin.add("whiteCircle", circle);
-        skin.add("whiteRectangle", rectangle);
-        skin.add("red", new Color(0.827f, 0.137f, 0.047f, 1));
-        skin.add("brown", new Color(0.396f, 0.239f, 0.149f, 1));
-        skin.add("darkBrown", new Color(0.349f, 0.184f, 0.133f, 1));
-        skin.add("gray", new Color(0.49f, 0.471f, 0.384f, 1));
-        skin.add("redRectangle", Util.coloredSprite(rectangle, skin.getColor("red")));
-        skin.add("brownRectangle", Util.coloredSprite(rectangle, skin.getColor("brown")));
-        skin.add("darkBrownRectangle", Util.coloredSprite(rectangle, skin.getColor("darkBrown")));
-        skin.add("grayRectangle", Util.coloredSprite(rectangle, skin.getColor("gray")));
-        skin.add("woodenBackground", new Texture("wooden_plank.png"));
-        skin.add("darkWoodenBackground", new Texture("dark_wooden_plank.png"));
-        skin.add("disabledWoodenBackground", new Texture("disabled_wooden_plank.png"));
-        skin.add("background", new Texture("background.png"));
-
-        Label.LabelStyle defaultLabelStyle = new Label.LabelStyle();
-        defaultLabelStyle.font = font;
-        defaultLabelStyle.fontColor = Color.BLACK;
-
-        Button.ButtonStyle defaultButtonStyle = new Button.ButtonStyle();
-
-        skin.add("default", defaultLabelStyle);
-        skin.add("default", defaultButtonStyle);
-
-        skin.add("amount", defaultLabelStyle);
-        skin.add("price", defaultLabelStyle);
-        skin.add("name", defaultLabelStyle);
-
-        Button.ButtonStyle generatorButton = new Button.ButtonStyle(defaultButtonStyle);
-        generatorButton.up = skin.getDrawable("woodenBackground");
-        generatorButton.down = skin.getDrawable("darkWoodenBackground");
-        generatorButton.disabled = skin.getDrawable("disabledWoodenBackground");
-        generatorButton.pressedOffsetY = -1;
-
-        skin.add("generator", generatorButton);
-
-        return skin;
-    }
-
-    private Camera createCamera() {
-        Camera camera = new OrthographicCamera(400, 400);
-        camera.position.set(camera.viewportWidth / 2, camera.viewportHeight / 2, 0);
-        return camera;
-    }
-
-    private Viewport createViewport(Camera camera) {
-        Viewport viewport = new FitViewport(camera.viewportWidth, camera.viewportHeight, camera);
-        camera.update();
-        return viewport;
     }
 
     private Stage createStage(Skin skin) {
@@ -124,12 +96,36 @@ public class ClickerScreen extends ScreenAdapter {
         Label headsLabel = stock.generateHeadsLabel(skin);
         headsLabel.setAlignment(Align.right);
 
+        Button submitScoreButton = new Button(skin);
+        submitScoreButton.add("Submit score");
+        submitScoreButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                stage.addActor(leaderBoardNamePopup);
+            }
+        });
+
+        Button showLeaderBoardButton = new Button(skin);
+        showLeaderBoardButton.add("Show leaderboard");
+        showLeaderBoardButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                if (leaderBoardScreen != null) {
+                    guillotineClicker.setScreen(leaderBoardScreen);
+                }
+            }
+        });
+
         Table rightColumn = new Table();
         rightColumn.top();
 
         rightColumn.add(headsLabel).fillX().spaceBottom(20);
         rightColumn.row();
         rightColumn.add(stock.getHeadGeneratorManager().getButtonGroup());
+        rightColumn.row();
+        rightColumn.add(submitScoreButton).expandY().bottom();
+        rightColumn.row();
+        rightColumn.add(showLeaderBoardButton).bottom();
 
         rootTable.add(guillotineButton).expand();
         rootTable.add(rightColumn).fillY();
@@ -137,10 +133,8 @@ public class ClickerScreen extends ScreenAdapter {
         return stage;
     }
 
-    public BitmapFont createFont() {
-        BitmapFont font = new BitmapFont();
-        font.setColor(Color.BLACK);
-        return font;
+    public void setLeaderBoardScreen(LeaderBoardScreen leaderBoardScreen) {
+        this.leaderBoardScreen = leaderBoardScreen;
     }
 
     private void gameIteration(float deltaTime) {
@@ -153,23 +147,22 @@ public class ClickerScreen extends ScreenAdapter {
         gameIteration(deltaTime);
 
         ScreenUtils.clear(0.47f, 0.59f, 0.77f, 1);
-        batch.setProjectionMatrix(camera.combined);
-        batch.begin();
         stage.act(deltaTime);
         stage.draw();
-        batch.end();
+    }
+
+    public void show() {
+        Gdx.input.setInputProcessor(inputHandler);
     }
 
     @Override
     public void dispose() {
-        batch.dispose();
         font.dispose();
         stage.dispose();
     }
 
     @Override
     public void resize(int width, int height) {
-        viewport.update(width, height);
         stage.getViewport().update(width, height, true);
     }
 }

@@ -23,8 +23,8 @@ public class HeadStock extends Stock {
     }
 
     @Override
-    public void passSecond() {
-        super.passSecond();
+    public void passTime(float deltaTime) {
+        super.passTime(deltaTime);
         currentHeadsInStock.setText(getHeadsLabelText());
     }
 

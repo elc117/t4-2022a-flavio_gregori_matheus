@@ -2,24 +2,36 @@ package com.mygdx.game.base;
 
 public abstract class Stock {
     protected long currencyInStock;
+    protected float actualCurrencyInStock;
     protected long totalCurrencyGenerated;
+    protected float actualCurrencyGenerated;
     protected Clickable clickable;
     protected GeneratorManager<?> generatorManager;
 
     public Stock() {
-        currencyInStock = 0;
-        totalCurrencyGenerated = 0;
+        actualCurrencyInStock = 0;
+        actualCurrencyGenerated = 0;
+        updateCurrency();
+    }
+
+    protected void updateCurrency() {
+        currencyInStock = (long) actualCurrencyInStock;
+        totalCurrencyGenerated = (long) actualCurrencyGenerated;
     }
 
     public void click() {
-        currencyInStock += clickable.generate(this);
-        totalCurrencyGenerated += clickable.generate(this);
+        long generated = clickable.generate(this);
+        actualCurrencyInStock += generated;
+        actualCurrencyGenerated += generated;
+        updateCurrency();
     }
 
-    public void passSecond() {
-        long generatedThisSecond = generatorManager.generate(this);
-        currencyInStock += generatedThisSecond;
-        totalCurrencyGenerated += generatedThisSecond;
+    public void passTime(float deltaTime) {
+        long generatedInASecond = generatorManager.generate(this);
+        float generated = (generatedInASecond * deltaTime);
+        actualCurrencyGenerated += generated;
+        actualCurrencyInStock += generated;
+        updateCurrency();
         generatorManager.updateUnlockedGenerators(totalCurrencyGenerated, currencyInStock);
     }
 
@@ -39,15 +51,12 @@ public abstract class Stock {
         return currencyInStock;
     }
 
-    public void setCurrencyInStock(long currencyInStock) {
-        this.currencyInStock = currencyInStock;
-    }
-
     public long getTotalCurrencyGenerated() {
         return totalCurrencyGenerated;
     }
 
     public void charge(long amount) {
-        currencyInStock -= amount;
+        actualCurrencyInStock -= amount;
+        updateCurrency();
     }
 }

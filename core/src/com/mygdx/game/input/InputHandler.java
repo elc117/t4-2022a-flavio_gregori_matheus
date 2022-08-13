@@ -13,13 +13,11 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 public class InputHandler implements InputProcessor {
-    private GuillotineClicker game;
     private Stage stage;
     public final HashMap<Character, Action> keyActions = new HashMap<>();
     private final Set<Button> buttons = new LinkedHashSet<>();
 
-    public InputHandler(GuillotineClicker game, Stage stage){
-        this.game = game;
+    public InputHandler(Stage stage){
         this.stage = stage;
     }
 

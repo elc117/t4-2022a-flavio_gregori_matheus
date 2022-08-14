@@ -1,5 +1,7 @@
 package com.mygdx.game.base;
 
+import java.util.ArrayList;
+
 public abstract class Stock {
     protected long currencyInStock;
     protected float actualCurrencyInStock;
@@ -7,7 +9,8 @@ public abstract class Stock {
     protected float actualCurrencyGenerated;
     protected Clickable clickable;
     protected GeneratorManager<?> generatorManager;
-    protected boolean isBoosted = false;
+    protected final ArrayList<Float> boosts = new ArrayList<>();
+    protected float boostModifier = 1;
 
     public Stock() {
         actualCurrencyInStock = 0;
@@ -22,9 +25,7 @@ public abstract class Stock {
 
     public void click() {
         long generated = clickable.generate(this);
-        if (isBoosted) {
-            generated *= 2;
-        }
+        generated *= boostModifier;
         actualCurrencyInStock += generated;
         actualCurrencyGenerated += generated;
         updateCurrency();
@@ -33,16 +34,28 @@ public abstract class Stock {
     public void passTime(float deltaTime) {
         long generatedInASecond = generatorManager.generate(this);
         float generated = (generatedInASecond * deltaTime);
-        if (isBoosted) {
-            generated *= 2;
-        }
+        generated *= boostModifier;
         actualCurrencyGenerated += generated;
         actualCurrencyInStock += generated;
         updateCurrency();
         generatorManager.updateUnlockedGenerators(totalCurrencyGenerated, currencyInStock);
     }
 
-    public void setClicable(Clickable clickable) {
+    public void addBoost(float boost) {
+        boosts.add(boost);
+        updateBoostModifier();
+    }
+
+    public void removeBoost(float boost) {
+        boosts.remove(boost);
+        updateBoostModifier();
+    }
+
+    protected void updateBoostModifier() {
+        boostModifier = boosts.stream().reduce(1f, (a, b) -> a * b);
+    }
+
+    public void setClickable(Clickable clickable) {
         this.clickable = clickable;
     }
 
@@ -65,9 +78,5 @@ public abstract class Stock {
     public void charge(long amount) {
         actualCurrencyInStock -= amount;
         updateCurrency();
-    }
-
-    public void setBoosted(boolean boosted) {
-        isBoosted = boosted;
     }
 }

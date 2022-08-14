@@ -27,6 +27,7 @@ public class Dragon extends FlyingBoost {
     Action moveAction;
 
     public Dragon(HeadStock headStock, Skin skin) {
+        super(2);
         this.headStock = new HeadStock();
         TextureRegion[] frames = new TextureRegion[8];
         Texture img = new Texture("dragon_sprite.png");

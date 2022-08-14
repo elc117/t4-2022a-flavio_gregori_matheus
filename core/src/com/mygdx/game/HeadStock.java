@@ -3,10 +3,13 @@ package com.mygdx.game;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.mygdx.game.base.Stock;
+import com.mygdx.game.hurdygurdy.HurdyGurdy;
 
 public class HeadStock extends Stock {
 
     private HeadGeneratorManager headGeneratorManager;
+    private HurdyGurdy hurdyGurdy;
+    private boolean hurdyGurdyIsBoosting = false;
     private Label currentHeadsInStock;
 
     public HeadStock() {
@@ -24,6 +27,16 @@ public class HeadStock extends Stock {
 
     @Override
     public void passTime(float deltaTime) {
+        if (hurdyGurdy != null) {
+            if (hurdyGurdy.isPlaying() != hurdyGurdyIsBoosting) {
+                hurdyGurdyIsBoosting = hurdyGurdy.isPlaying();
+                if (hurdyGurdyIsBoosting) {
+                    addBoost(2);
+                } else {
+                    removeBoost(2);
+                }
+            }
+        }
         super.passTime(deltaTime);
         currentHeadsInStock.setText(getHeadsLabelText());
     }
@@ -48,5 +61,13 @@ public class HeadStock extends Stock {
     public void setHeadGeneratorManager(HeadGeneratorManager headGeneratorManager) {
         super.setGeneratorManager(headGeneratorManager);
         this.headGeneratorManager = headGeneratorManager;
+    }
+
+    public HurdyGurdy getHurdyGurdy() {
+        return hurdyGurdy;
+    }
+
+    public void setHurdyGurdy(HurdyGurdy hurdyGurdy) {
+        this.hurdyGurdy = hurdyGurdy;
     }
 }

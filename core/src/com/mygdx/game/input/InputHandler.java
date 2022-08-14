@@ -1,20 +1,17 @@
 package com.mygdx.game.input;
 
 import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
-import com.badlogic.gdx.utils.Pools;
-import com.mygdx.game.GuillotineClicker;
 
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
 public class InputHandler implements InputProcessor {
-    private Stage stage;
+    private final Stage stage;
     public final HashMap<Character, Action> keyActions = new HashMap<>();
+    private final Set<KeyHandler> keyHandlers = new LinkedHashSet<>();
     private final Set<Button> buttons = new LinkedHashSet<>();
 
     public InputHandler(Stage stage){
@@ -23,11 +20,13 @@ public class InputHandler implements InputProcessor {
 
     @Override
     public boolean keyDown(int keycode) {
+        keyHandlers.forEach(keyHandler -> keyHandler.keyDown(keycode));
         return stage.keyDown(keycode);
     }
 
     @Override
     public boolean keyUp(int keycode) {
+        keyHandlers.forEach(keyHandler -> keyHandler.keyUp(keycode));
         return stage.keyUp(keycode);
     }
 
@@ -42,6 +41,10 @@ public class InputHandler implements InputProcessor {
 
     public <T extends Button> void addButton(T button) {
         stage.getRoot().addActor(button);
+    }
+
+    public <T extends KeyHandler> void addKeyHandler(T keyHandler) {
+        keyHandlers.add(keyHandler);
     }
 
     @Override

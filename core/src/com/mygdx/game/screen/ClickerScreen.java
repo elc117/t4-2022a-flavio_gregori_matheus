@@ -15,6 +15,7 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.game.*;
+import com.mygdx.game.hurdygurdy.HurdyGurdy;
 import com.mygdx.game.input.InputHandler;
 import com.mygdx.game.leaderboard.PostScoreResponseListener;
 import com.mygdx.game.util.Util;
@@ -26,6 +27,7 @@ public class ClickerScreen extends ScreenAdapter {
     private Viewport viewport;
     private Guillotine guillotine;
     private Dragon dragon;
+    HurdyGurdy hurdyGurdy;
     private Stage stage;
     private InputHandler inputHandler;
     private LeaderBoardScreen leaderBoardScreen;
@@ -42,8 +44,10 @@ public class ClickerScreen extends ScreenAdapter {
         stock = new HeadStock();
         stock.setHeadGeneratorManager(new HeadGeneratorManager(stock, skin));
         guillotine = new Guillotine(stock);
-        stock.setClicable(guillotine);
+        stock.setClickable(guillotine);
         dragon = new Dragon(stock, skin);
+        hurdyGurdy = new HurdyGurdy();
+        stock.setHurdyGurdy(hurdyGurdy);
 
         leaderBoardNamePopup = new Window("", skin);
         TextField textField = new TextField("", skin);
@@ -95,10 +99,9 @@ public class ClickerScreen extends ScreenAdapter {
         repeat.setAction(delayAction);
         stage.addAction(repeat);
 
-
-
         inputHandler = new InputHandler(stage);
         inputHandler.keyActions.put('g', guillotine::permanentBoost); /*For testing purposes*/
+        inputHandler.addKeyHandler(hurdyGurdy);
     }
 
     private Stage createStage(Skin skin) {

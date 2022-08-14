@@ -19,3 +19,4 @@ gradle-app.setting
 /desktop/bin/
 /html/bin/
 /ios/bin/
+/html/war/

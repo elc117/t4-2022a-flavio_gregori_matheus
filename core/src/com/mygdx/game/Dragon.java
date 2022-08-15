@@ -1,10 +1,7 @@
 package com.mygdx.game;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Action;
@@ -14,11 +11,11 @@ import com.badlogic.gdx.scenes.scene2d.actions.DelayAction;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.mygdx.game.base.FlyingBoost;
-import com.mygdx.game.screen.ClickerScreen;
+import com.mygdx.game.util.Util;
 
 public class Dragon extends FlyingBoost {
     private HeadStock headStock;
-    private AnimatedBackground animatedBackground;
+    private AnimatedDrawable animatedBackground;
     private Button flyingButton;
     private Table overlay;
     private Vector2 position = new Vector2(0, 0);
@@ -29,18 +26,12 @@ public class Dragon extends FlyingBoost {
     public Dragon(HeadStock headStock, Skin skin) {
         super(2);
         this.headStock = new HeadStock();
-        TextureRegion[] frames = new TextureRegion[8];
-        Texture img = new Texture("dragon_sprite.png");
-
-        TextureRegion[][] tmpframes = TextureRegion.split(img, 32, 32);
-        System.arraycopy(tmpframes[0], 0, frames, 0, 8);
-
-        Animation<TextureRegion> animation = new Animation<>(0.12f, frames);
-        animatedBackground = new AnimatedBackground(animation);
+        animatedBackground = Util.animation("dragon_sprite.png", 32, 32, 8, 0.12f);
         animatedBackground.loop();
         animatedBackground.startAnimation();
 
         flyingButton = new Button(skin);
+        flyingButton.setPosition(0, 0);
         moveAction = new Action() {
             @Override
             public boolean act(float delta) {
@@ -59,7 +50,6 @@ public class Dragon extends FlyingBoost {
                     @Override
                     public boolean act(float delta) {
                         Dragon.this.removeBoost(headStock);
-                        System.out.println("Fim boost");
                         Dragon.this.removeFromStage(stage);
                         flyingButton.clearActions();
                         return true;
@@ -69,7 +59,6 @@ public class Dragon extends FlyingBoost {
             }
         });
         flyingButton.addAction(moveAction);
-        flyingButton.setPosition(0, 0);
         flyingButton.add(new Image(animatedBackground));
 
         overlay = new Table(skin);

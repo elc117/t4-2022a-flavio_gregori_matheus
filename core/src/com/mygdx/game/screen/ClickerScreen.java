@@ -2,6 +2,7 @@ package com.mygdx.game.screen;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.Action;
@@ -33,6 +34,8 @@ public class ClickerScreen extends ScreenAdapter {
     private LeaderBoardScreen leaderBoardScreen;
     private Window leaderBoardNamePopup;
     GuillotineClicker guillotineClicker;
+    private float timeWithoutPlaying = 0;
+    private final Music backgroundMusic;
 
     public ClickerScreen(GuillotineClicker guillotineClicker) {
         this.guillotineClicker = guillotineClicker;
@@ -40,6 +43,10 @@ public class ClickerScreen extends ScreenAdapter {
         Skin skin = Util.createSkin();
         camera = Util.createCamera();
         viewport = Util.createViewport(camera);
+
+        backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("Medieval_Song_-_Eric_VINCENT.mp3"));
+        backgroundMusic.setLooping(true);
+        backgroundMusic.play();
 
         stock = new HeadStock();
         stock.setHeadGeneratorManager(new HeadGeneratorManager(stock, skin));
@@ -51,12 +58,12 @@ public class ClickerScreen extends ScreenAdapter {
 
         leaderBoardNamePopup = new Window("", skin);
         TextField textField = new TextField("", skin);
-        textField.setMessageText("What's your name?");
+        textField.setMessageText("Qual o seu nome?");
         leaderBoardNamePopup.setFillParent(true);
-        leaderBoardNamePopup.add(textField);
+        leaderBoardNamePopup.add(textField).pad(5);
 
         Button submitButton = new Button(skin);
-        submitButton.add("Submit");
+        submitButton.add("Enviar");
         submitButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -65,7 +72,6 @@ public class ClickerScreen extends ScreenAdapter {
                     public void handleHttpResponse(boolean success, String message) {
                         if (success) {
                             System.out.println(message);
-                            leaderBoardNamePopup.remove();
                         }
                     }
 
@@ -79,6 +85,8 @@ public class ClickerScreen extends ScreenAdapter {
 
                     }
                 });
+                leaderBoardNamePopup.remove();
+                hurdyGurdy.setShouldPlay(true);
             }
         });
         leaderBoardNamePopup.row();
@@ -92,7 +100,9 @@ public class ClickerScreen extends ScreenAdapter {
         delayAction.setAction(new Action() {
             @Override
             public boolean act(float delta) {
-                dragon.addToStage(stage);
+                if (spawnDragon()) {
+                    dragon.addToStage(stage);
+                }
                 return true;
             }
         });
@@ -102,6 +112,10 @@ public class ClickerScreen extends ScreenAdapter {
         inputHandler = new InputHandler(stage);
         inputHandler.keyActions.put('g', guillotine::permanentBoost); /*For testing purposes*/
         inputHandler.addKeyHandler(hurdyGurdy);
+    }
+
+    private boolean spawnDragon() {
+        return !leaderBoardNamePopup.hasParent();
     }
 
     private Stage createStage(Skin skin) {
@@ -118,16 +132,17 @@ public class ClickerScreen extends ScreenAdapter {
         headsLabel.setAlignment(Align.right);
 
         Button submitScoreButton = new Button(skin);
-        submitScoreButton.add("Submit score");
+        submitScoreButton.add("Enviar pontuação");
         submitScoreButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 stage.addActor(leaderBoardNamePopup);
+                hurdyGurdy.setShouldPlay(false);
             }
         });
 
         Button showLeaderBoardButton = new Button(skin);
-        showLeaderBoardButton.add("Show leaderboard");
+        showLeaderBoardButton.add("Mostrar leaderboard");
         showLeaderBoardButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -164,7 +179,18 @@ public class ClickerScreen extends ScreenAdapter {
 
     @Override
     public void render(float deltaTime) {
-//		stage.getRoot().debugAll();
+        if (hurdyGurdy.isPlaying()) {
+            backgroundMusic.stop();
+        } else {
+            if (!backgroundMusic.isPlaying()) {
+                if (timeWithoutPlaying >= 2.5) {
+                    backgroundMusic.play();
+                    timeWithoutPlaying = 0;
+                } else {
+                    timeWithoutPlaying += deltaTime;
+                }
+            }
+        }
         gameIteration(deltaTime);
 
         ScreenUtils.clear(0.47f, 0.59f, 0.77f, 1);

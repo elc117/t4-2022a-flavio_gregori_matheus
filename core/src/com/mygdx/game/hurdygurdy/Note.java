@@ -1,9 +1,7 @@
 package com.mygdx.game.hurdygurdy;
 
 import com.badlogic.gdx.audio.Sound;
-import com.badlogic.gdx.utils.Timer;
-import com.badlogic.gdx.utils.Timer.Task;
-import com.mygdx.game.input.Action;
+import com.mygdx.game.util.Util;
 
 public class Note {
     private Sound loop;
@@ -41,28 +39,8 @@ public class Note {
             if (loopPlaying == null) {
                 loop.stop();
             } else {
-                fadeOut(loop, loopPlaying, () -> loopPlaying = null);
+                Util.fadeOut(loop, loopPlaying, () -> loopPlaying = null);
             }
         }
-    }
-
-    public void fadeOut(Sound sound, long soundId, Action onStop) {
-        Task task = new Task() {
-            float volume = 1;
-            @Override
-            public void run() {
-                if (volume <= 0) {
-                    sound.stop();
-                    cancel();
-                    if (onStop != null) {
-                        onStop.act();
-                    }
-                } else {
-                    sound.setVolume(soundId, volume);
-                    volume -= 0.1;
-                }
-            }
-        };
-        Timer.schedule(task, 0, 0.005f);
     }
 }

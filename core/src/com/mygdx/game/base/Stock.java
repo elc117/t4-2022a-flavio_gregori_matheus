@@ -11,6 +11,7 @@ public abstract class Stock {
     protected GeneratorManager<?> generatorManager;
     protected final ArrayList<Float> boosts = new ArrayList<>();
     protected float boostModifier = 1;
+    protected long previouslyGeneratedByClick = 0;
 
     public Stock() {
         actualCurrencyInStock = 0;
@@ -26,6 +27,7 @@ public abstract class Stock {
     public void click() {
         long generated = clickable.generate(this);
         generated *= boostModifier;
+        previouslyGeneratedByClick = generated;
         actualCurrencyInStock += generated;
         actualCurrencyGenerated += generated;
         updateCurrency();
@@ -78,5 +80,9 @@ public abstract class Stock {
     public void charge(long amount) {
         actualCurrencyInStock -= amount;
         updateCurrency();
+    }
+
+    public long getPreviouslyGeneratedByClick() {
+        return previouslyGeneratedByClick;
     }
 }

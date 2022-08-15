@@ -9,6 +9,7 @@ import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
 
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 public class LeaderBoard {
     private final String BASE_URL ="https://script.google.com/macros/s/" +
@@ -55,7 +56,7 @@ public class LeaderBoard {
         sendGetRequest(url, responseListener);
     }
 
-    public void getScores(GetScoreResponseListener getScoreResponseListener) {
+    public void getScores(GetScoreResponseListener getScoreResponseListener, int max) {
         HttpResponseListener responseListener = new HttpResponseListener() {
             @Override
             public void handleHttpResponse(Net.HttpResponse httpResponse) {
@@ -67,6 +68,7 @@ public class LeaderBoard {
                         success = false;
                     } else {
                         success = true;
+                        scores = scores.stream().sorted(Score::compareTo).limit(max).collect(Collectors.toCollection(ArrayList::new));
                     }
                     getScoreResponseListener.handleHttpResponse(success, scores);
                 }

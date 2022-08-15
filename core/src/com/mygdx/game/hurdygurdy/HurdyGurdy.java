@@ -2,21 +2,16 @@ package com.mygdx.game.hurdygurdy;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.audio.Music;
 import com.mygdx.game.input.KeyHandler;
 
 import java.util.HashMap;
 
 public class HurdyGurdy implements KeyHandler {
     private final HashMap<Integer, Note> notes;
-    private final Music backgroundMusic;
+    private boolean shouldPlay = true;
 
     public HurdyGurdy() {
         notes = new HashMap<>();
-
-        backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("Medieval_Song_-_Eric_VINCENT.mp3"));
-        backgroundMusic.setLooping(true);
-//        backgroundMusic.play();
 
         addNote(createNote("c", "sound/c.wav"), Input.Keys.Q);
         addNote(createNote("d", "sound/d.wav"), Input.Keys.W);
@@ -45,9 +40,11 @@ public class HurdyGurdy implements KeyHandler {
 
     @Override
     public void keyDown(int keycode) {
-        Note note = notes.get(keycode);
-        if (note != null) {
-            note.play();
+        if (shouldPlay) {
+            Note note = notes.get(keycode);
+            if (note != null) {
+                note.play();
+            }
         }
     }
 
@@ -56,6 +53,13 @@ public class HurdyGurdy implements KeyHandler {
         Note note = notes.get(keycode);
         if (note != null) {
             note.stop();
+        }
+    }
+
+    public void setShouldPlay(boolean shouldPlay) {
+        this.shouldPlay = shouldPlay;
+        if (!shouldPlay) {
+            notes.values().forEach(Note::stop);
         }
     }
 }

@@ -1,11 +1,19 @@
 package com.mygdx.game.util;
 
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.*;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.mygdx.game.AnimatedDrawable;
+
+import java.util.Arrays;
+import java.util.stream.Stream;
 
 public class Util {
     public static BitmapFont createFont() {
@@ -26,9 +34,11 @@ public class Util {
         skin.add("darkBrown", new Color(0.349f, 0.184f, 0.133f, 1));
         skin.add("gray", new Color(0.49f, 0.471f, 0.384f, 1));
         skin.add("redRectangle", Util.coloredSprite(rectangle, skin.getColor("red")));
+        skin.add("blackRectangle", Util.coloredSprite(rectangle, Color.BLACK));
         skin.add("brownRectangle", Util.coloredSprite(rectangle, skin.getColor("brown")));
         skin.add("darkBrownRectangle", Util.coloredSprite(rectangle, skin.getColor("darkBrown")));
         skin.add("grayRectangle", Util.coloredSprite(rectangle, skin.getColor("gray")));
+        skin.add("blackTransparentRectangle", Util.coloredSprite(rectangle, new Color(0, 0, 0, 0.8f)));
         skin.add("woodenBackground", new Texture("wooden_plank.png"));
         skin.add("darkWoodenBackground", new Texture("dark_wooden_plank.png"));
         skin.add("disabledWoodenBackground", new Texture("disabled_wooden_plank.png"));
@@ -38,8 +48,13 @@ public class Util {
         defaultLabelStyle.font = createFont();
         defaultLabelStyle.fontColor = Color.BLACK;
 
+        Label.LabelStyle whiteLabel = new Label.LabelStyle();
+        whiteLabel.font = defaultLabelStyle.font;
+        whiteLabel.fontColor = Color.WHITE;
+
         Button.ButtonStyle defaultButtonStyle = new Button.ButtonStyle();
 
+        skin.add("white", whiteLabel);
         skin.add("default", defaultLabelStyle);
         skin.add("default", defaultButtonStyle);
 
@@ -57,12 +72,12 @@ public class Util {
 
         Window.WindowStyle windowStyle = new Window.WindowStyle();
         windowStyle.titleFont = defaultLabelStyle.font;
-        windowStyle.background = skin.getDrawable("grayRect");
+        windowStyle.background = skin.getDrawable("background");
 
         TextField.TextFieldStyle textFieldStyle = new TextField.TextFieldStyle();
         textFieldStyle.font = defaultLabelStyle.font;
-        textFieldStyle.fontColor = Color.BLACK;
-        textFieldStyle.background = skin.getDrawable("redRectangle");
+        textFieldStyle.fontColor = Color.WHITE;
+        textFieldStyle.background = skin.getDrawable("blackRectangle");
         textFieldStyle.cursor = skin.getDrawable("cursor");
 
         skin.add("default", textFieldStyle);
@@ -94,5 +109,37 @@ public class Util {
         Sprite coloredSprite = new Sprite(texture);
         coloredSprite.setColor(color);
         return coloredSprite;
+    }
+
+    public static void fadeOut(Sound sound, long soundId, Action onStop) {
+        Timer.Task task = new Timer.Task() {
+            float volume = 1;
+            @Override
+            public void run() {
+                if (volume <= 0) {
+                    sound.stop();
+                    cancel();
+                    if (onStop != null) {
+                        onStop.act();
+                    }
+                } else {
+                    sound.setVolume(soundId, volume);
+                    volume -= 0.1;
+                }
+            }
+        };
+        Timer.schedule(task, 0, 0.005f);
+    }
+
+    public static AnimatedDrawable animation(String path, int tileWidth, int tileHeight, int amount, float frameDuration) {
+        TextureRegion[] frames = new TextureRegion[amount];
+        Texture img = new Texture(path);
+
+        TextureRegion[][] tmpframes = TextureRegion.split(img, tileWidth, tileHeight);
+        frames = Arrays.stream(tmpframes).flatMap(Arrays::stream).toArray(TextureRegion[]::new);
+
+        Animation<TextureRegion> animation = new Animation<>(frameDuration, frames);
+
+        return new AnimatedDrawable(animation);
     }
 }

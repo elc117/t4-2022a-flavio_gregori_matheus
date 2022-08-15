@@ -3,6 +3,7 @@ package com.mygdx.game.input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.mygdx.game.util.Action;
 
 import java.util.HashMap;
 import java.util.LinkedHashSet;

@@ -36,7 +36,8 @@ public class ClickerScreen extends ScreenAdapter {
     GuillotineClicker guillotineClicker;
     private float timeWithoutPlaying = 0;
     private final Music backgroundMusic;
-
+    private boolean canSubmitScore = true;
+    Button submitScoreButton;
     public ClickerScreen(GuillotineClicker guillotineClicker) {
         this.guillotineClicker = guillotineClicker;
         font = Util.createFont();
@@ -110,7 +111,13 @@ public class ClickerScreen extends ScreenAdapter {
         stage.addAction(repeat);
 
         inputHandler = new InputHandler(stage);
-        inputHandler.keyActions.put('g', guillotine::permanentBoost); /*For testing purposes*/
+        inputHandler.keyActions.put('g', () -> {
+            guillotine.permanentBoost();
+            canSubmitScore = false;
+            if (submitScoreButton != null) {
+                submitScoreButton.remove();
+            }
+        }); /*For testing purposes*/
         inputHandler.addKeyHandler(hurdyGurdy);
     }
 
@@ -131,7 +138,7 @@ public class ClickerScreen extends ScreenAdapter {
         Label headsLabel = stock.generateHeadsLabel(skin);
         headsLabel.setAlignment(Align.right);
 
-        Button submitScoreButton = new Button(skin);
+        submitScoreButton = new Button(skin);
         submitScoreButton.add("Enviar pontuação");
         submitScoreButton.addListener(new ChangeListener() {
             @Override
